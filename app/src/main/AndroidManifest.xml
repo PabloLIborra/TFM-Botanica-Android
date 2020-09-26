@@ -8,8 +8,12 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/icono"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/UAPlantTheme">
+        <activity
+            android:name=".TabBarActivity"
+            android:label="@string/title_activity_tab_bar"
+            android:theme="@style/UAPlantTheme.NoActionBar"></activity>
+        <activity android:name=".InitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

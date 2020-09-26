@@ -5,4 +5,5 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorCeldaItinerarios">#235B6E</color>
     <color name="colorCeldaPlantas">#2D764F</color>
+    <color name="colorTextButton">#000000</color>
 </resources>
