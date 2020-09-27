@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,13 @@ public class ListRoutesFragment extends Fragment {
     private RecyclerView recyclerView;
     private RouteAdapterList adapter;
     private List<RouteListItem> routes;
+
+    private List<String> sectionsName = new ArrayList<String>() {{
+        add("En Proceso");
+        add("Nuevos");
+        add("Completados");
+    }};
+    private List<RoutesSection> sections;
 
     public ListRoutesFragment() {
 
@@ -49,18 +57,25 @@ public class ListRoutesFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         this.recyclerView.setLayoutManager(manager);
 
-        this.routes = getRoutes();
-        this.adapter = new RouteAdapterList(this.routes);
+        this.sections = createSectionsData();
+        this.adapter = new RouteAdapterList(this.sections);
         this.recyclerView.setAdapter(this.adapter);
     }
 
-    private List<RouteListItem> getRoutes() {
+    private List<RoutesSection> createSectionsData() {
+        List<RoutesSection> sections = new ArrayList<>();
+
         List<RouteListItem> items = new ArrayList<>();
         items.add(new RouteListItem(new Route("Gimnospermas", "Información de prueba", State.AVAILABLE)));
         items.add(new RouteListItem(new Route("Gimnospermas", "Información de prueba", State.AVAILABLE)));
         items.add(new RouteListItem(new Route("Gimnospermas", "Información de prueba", State.AVAILABLE)));
         items.add(new RouteListItem(new Route("Gimnospermas", "Información de prueba", State.AVAILABLE)));
         items.add(new RouteListItem(new Route("Gimnospermas", "Información de prueba", State.AVAILABLE)));
-        return items;
+
+        sections.add(new RoutesSection(R.drawable.inprocess_route_icon, this.sectionsName.get(0), items));
+        sections.add(new RoutesSection(R.drawable.new_route_icon, this.sectionsName.get(1), items));
+        sections.add(new RoutesSection(R.drawable.completed_route_icon, this.sectionsName.get(2), items));
+
+        return sections;
     }
 }
