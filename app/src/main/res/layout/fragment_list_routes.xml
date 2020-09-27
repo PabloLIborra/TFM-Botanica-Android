@@ -14,10 +14,11 @@
         android:alpha="0.3"
         android:src="@drawable/background_routes"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listRoutes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listRoutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
 
 </FrameLayout>
