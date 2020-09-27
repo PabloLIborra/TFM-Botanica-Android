@@ -1,17 +1,18 @@
 package com.pabloliborra.uaplant;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.pabloliborra.uaplant.pagecontroller.PagerController;
 
 public class TabBarActivity extends AppCompatActivity {
+    private Toolbar mTopToolbar;
 
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -22,6 +23,12 @@ public class TabBarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_bar);
+
+        this.overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+        mTopToolbar = findViewById(R.id.toolbar_top);
+        setSupportActionBar(mTopToolbar);
+        setTitle("Listas");
 
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.view_pager);

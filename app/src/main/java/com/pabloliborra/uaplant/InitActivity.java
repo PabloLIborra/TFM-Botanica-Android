@@ -32,8 +32,6 @@ public class InitActivity extends AppCompatActivity {
                 startButton();
             }
         });
-
-        getSupportActionBar().hide();
     }
 
     private void startButton() {

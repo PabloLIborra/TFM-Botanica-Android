@@ -1,5 +1,7 @@
 package com.pabloliborra.uaplant.Routes;
 
+import android.util.Log;
+
 public class RouteListItem {
     private Route route;
     private String title;
@@ -11,8 +13,9 @@ public class RouteListItem {
         this.route = route;
         this.title = route.getTitle();
         this.description = route.getDescription();
-        this.completeActivities = 2;
-        this.totalActivities = 4;
+        this.completeActivities = 0;
+        this.totalActivities = route.getActivities().size();
+        Log.d("Actividades", String.valueOf(this.totalActivities));
     }
 
     public String getTitle() {
@@ -29,5 +32,9 @@ public class RouteListItem {
 
     public int getTotalActivities() {
         return this.totalActivities;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 }

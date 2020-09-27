@@ -1,7 +1,10 @@
 package com.pabloliborra.uaplant.Routes;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +15,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.Constants;
 
 import java.util.List;
 
-public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.RecyclerRouteHolder> {
+public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.RecyclerRouteHolder> implements RoutesChildAdapterList.OnRouteClickListener {
+    Activity activity;
+
     private List<RoutesSection> sections;
+    private List<RouteListItem> routes;
     private int selectedPosition = -1;
 
-    public RouteAdapterList(List<RoutesSection> sections) {
+    public RouteAdapterList(Activity activity, List<RoutesSection> sections, List<RouteListItem> routes) {
+        this.activity = activity;
         this.sections = sections;
+        this.routes = routes;
     }
 
     @NonNull
@@ -40,13 +49,20 @@ public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.Recy
         holder.titleSection.setText(section.getSectionTitle());
         holder.numActivitiesSection.setText(String.valueOf(section.getRoutesList().size()));
 
-        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(routes);
+        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(this.activity, routes, this);
         holder.childRecyclerView.setAdapter(childAdapter);
     }
 
     @Override
     public int getItemCount() {
         return this.sections.size();
+    }
+
+    @Override
+    public void onRouteClick(View v, int position) {
+        Intent intent = new Intent(this.activity, RoutesMap.class);
+        intent.putExtra(Constants.routeExtraTitle, this.routes.get(position).getRoute());
+        this.activity.startActivity(intent);
     }
 
     public class RecyclerRouteHolder extends RecyclerView.ViewHolder {

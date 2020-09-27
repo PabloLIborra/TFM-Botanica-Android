@@ -1,6 +1,8 @@
 package com.pabloliborra.uaplant.Utils;
 
-public enum State {
+import java.io.Serializable;
+
+public enum State implements Serializable {
     IN_PROGRESS,
     AVAILABLE,
     COMPLETE,
