@@ -76,7 +76,7 @@ public class ListRoutesFragment extends Fragment {
         List<Activity> activities = new ArrayList<>();
         Activity activity = new Activity("Prueba", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion", new Date());
         activities.add(activity);
-        Activity activity2 = new Activity("Prueba", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date());
+        Activity activity2 = new Activity("Prueba2", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date());
         activities.add(activity2);
 
         Route route = new Route("Gimnospermas", "Información de prueba", State.AVAILABLE, activities);

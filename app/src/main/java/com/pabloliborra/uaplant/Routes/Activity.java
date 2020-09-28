@@ -5,7 +5,7 @@ import com.pabloliborra.uaplant.Utils.State;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Activity implements Serializable {
+public class Activity implements Serializable, Comparable<Activity> {
 
     private String title;
     private String subtitle;
@@ -61,5 +61,13 @@ public class Activity implements Serializable {
 
     public Route getRoute() {
         return route;
+    }
+
+    @Override
+    public int compareTo(Activity o) {
+        if (getDate() == null || o.getDate() == null) {
+            return 0;
+        }
+        return getDate().compareTo(o.getDate());
     }
 }

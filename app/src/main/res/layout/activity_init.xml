@@ -10,7 +10,7 @@
         android:id="@+id/initButton"
         android:layout_width="140dp"
         android:layout_height="50dp"
-        android:textColor="@drawable/text_color_button"
+        android:textColor="@drawable/text_color_button_black"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

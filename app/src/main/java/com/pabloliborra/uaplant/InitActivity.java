@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 public class InitActivity extends AppCompatActivity {
 
@@ -22,7 +21,7 @@ public class InitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_init);
 
         Button initButton = findViewById(R.id.initButton);
-        initButton.setBackgroundResource(R.drawable.rounded_button);
+        initButton.setBackgroundResource(R.drawable.rounded_button_primary);
         initButton.setTextSize(18);
         initButton.setTypeface(null, Typeface.BOLD);
         initButton.setText(R.string.init_button);
