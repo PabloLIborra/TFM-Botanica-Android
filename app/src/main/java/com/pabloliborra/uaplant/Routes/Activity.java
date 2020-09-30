@@ -1,11 +1,15 @@
 package com.pabloliborra.uaplant.Routes;
 
+import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Activity implements Serializable, Comparable<Activity> {
+
+    private Route route;
 
     private String title;
     private String subtitle;
@@ -14,10 +18,10 @@ public class Activity implements Serializable, Comparable<Activity> {
     private Double longitude;
     private String information;
     private Date date;
+    private List<Question> questions;
+    private Plant plant;
 
-    private Route route;
-
-    public Activity(String title, String subtitle, State state, Double latitude, Double longitude, String information, Date date) {
+    public Activity(String title, String subtitle, State state, Double latitude, Double longitude, String information, Date date, List<Question> questions, Plant plant) {
         this.title = title;
         this.subtitle = subtitle;
         this.state = state;
@@ -25,6 +29,12 @@ public class Activity implements Serializable, Comparable<Activity> {
         this.longitude = longitude;
         this.information = information;
         this.date = date;
+        this.questions = questions;
+        this.plant = plant;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 
     public String getTitle() {
@@ -33,6 +43,10 @@ public class Activity implements Serializable, Comparable<Activity> {
 
     public String getSubtitle() {
         return subtitle;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public State getState() {
@@ -59,8 +73,12 @@ public class Activity implements Serializable, Comparable<Activity> {
         this.route = route;
     }
 
-    public Route getRoute() {
-        return route;
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public Plant getPlant() {
+        return plant;
     }
 
     @Override

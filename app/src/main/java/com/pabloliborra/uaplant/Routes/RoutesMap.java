@@ -41,13 +41,13 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes_map);
 
+        this.route = (Route) getIntent().getSerializableExtra(Constants.routeExtraTitle);
+
         Toolbar mTopToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mTopToolbar);
-        setTitle("Mapa");
+        setTitle(route.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        this.route = (Route) getIntent().getSerializableExtra(Constants.routeExtraTitle);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

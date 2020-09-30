@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.pabloliborra.uaplant">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -14,8 +15,12 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/icono"
         android:supportsRtl="true"
+        tools:ignore="LockedOrientationActivity"
         android:theme="@style/UAPlantTheme">
-        <activity android:name=".Routes.ActivityDetailActivity"></activity>
+        <activity android:name=".Routes.QuestionListActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".Routes.ActivityDetailActivity"
+            android:screenOrientation="portrait"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -31,11 +36,14 @@
         <activity
             android:name=".Routes.RoutesMap"
             android:label="@string/title_activity_routes_map"
-            android:parentActivityName=".TabBarActivity" />
+            android:parentActivityName=".TabBarActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TabBarActivity"
-            android:label="@string/title_activity_tab_bar" />
-        <activity android:name=".InitActivity">
+            android:label="@string/title_activity_tab_bar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".InitActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

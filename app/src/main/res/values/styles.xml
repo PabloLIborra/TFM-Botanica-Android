@@ -20,4 +20,7 @@
     <style name="HeaderBar">
         <item name="android:background">@color/colorPrimary</item>
     </style>
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/rounded_button_primary</item>
+    </style>
 </resources>

@@ -15,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -73,10 +75,21 @@ public class ListRoutesFragment extends Fragment {
     private List<RoutesSection> createSectionsData() {
         List<RoutesSection> sections = new ArrayList<>();
 
+        List<String> answers = new ArrayList<>();
+        answers.add("Prueba");
+        answers.add("Arbol");
+        answers.add("Planta");
+
+        Plant plant = new Plant("Cupressus sempervirens", "Cupressaceae", "Informacion", false);
+
+        List<Question> questions = new ArrayList<>();
+        Question question = new Question("Hábito", answers, "Arbol");
+        questions.add(question);
+
         List<Activity> activities = new ArrayList<>();
-        Activity activity = new Activity("Prueba", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion", new Date());
+        Activity activity = new Activity("Prueba", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion", new Date(), questions, plant);
         activities.add(activity);
-        Activity activity2 = new Activity("Prueba2", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date());
+        Activity activity2 = new Activity("Prueba2", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date(), questions, plant);
         activities.add(activity2);
 
         Route route = new Route("Gimnospermas", "Información de prueba", State.AVAILABLE, activities);
