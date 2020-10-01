@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 
 import java.util.ArrayList;
@@ -27,19 +28,21 @@ public class QuestionListActivity extends AppCompatActivity {
 
         Toolbar mTopToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mTopToolbar);
-        getSupportActionBar().setTitle("Preguntas");
+        getSupportActionBar().setTitle("Actividad");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         this.activity = (Activity) getIntent().getSerializableExtra(Constants.activityExtraTitle);
 
         List<QuestionListItem> questions = new ArrayList<>();
-        for (Question q : this.activity.getQuestions()) {
+        List<Activity> ac = AppDatabase.getDatabase(this).daoApp().getAllActivities();
+        List<Question> questions2 = AppDatabase.getDatabase(this).daoApp().getAllQuestions();
+        for (Question q : this.activity.getQuestions(this)) {
             questions.add(new QuestionListItem(q));
         }
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerQuestionList);
-        QuestionAdapterList adapter = new QuestionAdapterList(this, questions, this.activity.getPlant());
+        QuestionAdapterList adapter = new QuestionAdapterList(this, questions, this.activity);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

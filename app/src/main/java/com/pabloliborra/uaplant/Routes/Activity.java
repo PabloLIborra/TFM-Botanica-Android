@@ -1,27 +1,42 @@
 package com.pabloliborra.uaplant.Routes;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 import com.pabloliborra.uaplant.Plants.Plant;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
+import com.pabloliborra.uaplant.Utils.DataConverter;
+import com.pabloliborra.uaplant.Utils.Relationships;
+import com.pabloliborra.uaplant.Utils.StateConverter;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class Activity implements Serializable, Comparable<Activity> {
 
-    private Route route;
-
+    @PrimaryKey(autoGenerate = true)
+    private long uid;
     private String title;
     private String subtitle;
+    @TypeConverters(StateConverter.class)
     private State state;
     private Double latitude;
     private Double longitude;
     private String information;
+    @TypeConverters(DataConverter.class)
     private Date date;
-    private List<Question> questions;
-    private Plant plant;
 
-    public Activity(String title, String subtitle, State state, Double latitude, Double longitude, String information, Date date, List<Question> questions, Plant plant) {
+    private long routeId;
+
+    public Activity(String title, String subtitle, State state, Double latitude, Double longitude, String information, Date date, long routeId) {
         this.title = title;
         this.subtitle = subtitle;
         this.state = state;
@@ -29,63 +44,94 @@ public class Activity implements Serializable, Comparable<Activity> {
         this.longitude = longitude;
         this.information = information;
         this.date = date;
-        this.questions = questions;
-        this.plant = plant;
+        this.routeId = routeId;
     }
 
-    public Route getRoute() {
-        return route;
+    public long getUid() {
+        return uid;
+    }
+
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getSubtitle() {
         return subtitle;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public State getState() {
         return state;
     }
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
     public Double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public Double getLongitude() {
         return longitude;
     }
 
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public String getInformation() {
         return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public long getRouteId() {
+        return routeId;
     }
 
-    public Plant getPlant() {
-        return plant;
+    public void setRouteId(long routeId) {
+        this.routeId = routeId;
+    }
+
+    public List<Question> getQuestions(final Context context) {
+        return AppDatabase.getDatabaseMain(context).daoApp().loadQuestionsByActivityId(getUid());
+    }
+
+    public Plant getPlant(Context context) {
+        return AppDatabase.getDatabaseMain(context).daoApp().loadPlantByActivityId(getUid());
     }
 
     @Override
     public int compareTo(Activity o) {
-        if (getDate() == null || o.getDate() == null) {
+        if (date == null || o.date == null) {
             return 0;
         }
-        return getDate().compareTo(o.getDate());
+        return date.compareTo(o.date);
     }
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
@@ -12,7 +13,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.State;
 
@@ -33,7 +36,7 @@ public class ActivityDetailActivity extends AppCompatActivity {
 
         Toolbar mTopToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mTopToolbar);
-        getSupportActionBar().setTitle("Actividad");
+        getSupportActionBar().setTitle("Mapa");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -49,6 +52,60 @@ public class ActivityDetailActivity extends AppCompatActivity {
         this.descriptionActivity.setText(this.activity.getInformation());
         this.descriptionActivity.setMovementMethod(new ScrollingMovementMethod());
 
+        this.setState();
+
+        this.startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity();
+            }
+        });
+
+        this.questionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startQuestions();
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        this.activity = AppDatabase.getDatabase(getApplicationContext()).daoApp().loadActivityById(this.activity.getUid());
+        this.setState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startActivity() {
+        if(this.activity.getState() == State.AVAILABLE) {
+            this.activity.setState(State.IN_PROGRESS);
+            this.state.setText("Estado: En Proceso");
+            this.stateImage.setImageResource(R.drawable.circle_state_inprocess);
+            this.startButton.setEnabled(false);
+            this.startButton.setAlpha(0.3f);
+            this.questionsButton.setEnabled(true);
+            this.questionsButton.setAlpha(1f);
+
+            AppDatabase.getDatabaseMain(this).daoApp().updateActivity(this.activity);
+        }
+    }
+
+    private void startQuestions() {
+        Intent i = new Intent(this, QuestionListActivity.class);
+        i.putExtra(Constants.activityExtraTitle, this.activity);
+        startActivity(i);
+    }
+
+    private void setState() {
         switch (this.activity.getState()) {
             case IN_PROGRESS:
                 this.state.setText("Estado: En Proceso");
@@ -83,46 +140,5 @@ public class ActivityDetailActivity extends AppCompatActivity {
                 this.questionsButton.setAlpha(0.3f);
                 break;
         }
-
-        this.startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity();
-            }
-        });
-
-        this.questionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startQuestions();
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
-        {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void startActivity() {
-        if(this.activity.getState() == State.AVAILABLE) {
-            this.activity.setState(State.IN_PROGRESS);
-            this.state.setText("Estado: En Proceso");
-            this.stateImage.setImageResource(R.drawable.circle_state_inprocess);
-            this.startButton.setEnabled(false);
-            this.startButton.setAlpha(0.3f);
-            this.questionsButton.setEnabled(true);
-            this.questionsButton.setAlpha(1f);
-        }
-    }
-
-    private void startQuestions() {
-        Intent i = new Intent(this, QuestionListActivity.class);
-        i.putExtra(Constants.activityExtraTitle, this.activity);
-        startActivity(i);
     }
 }

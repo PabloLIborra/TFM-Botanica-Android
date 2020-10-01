@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,23 +19,31 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.CustomInfoWindowAdapter;
+import com.pabloliborra.uaplant.Utils.State;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
 
     private Route route;
     private GoogleMap mMap;
 
     LinkedHashMap<Marker,Activity> markers =  new LinkedHashMap<Marker,Activity>();
 
-
     private Marker tappedMarker;
     private Activity activityTapped;
+
+    private List<Activity> activities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +54,23 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
 
         Toolbar mTopToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mTopToolbar);
-        setTitle(route.getTitle());
+        setTitle("Itinerarios");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        this.activities = this.route.getActivities(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        changeActivityState();
     }
 
     @Override
@@ -83,7 +101,7 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         if (!success) {
             Log.e("MAP", "Style parsing failed.");
         }
-        this.addMarkers();
+        changeActivityState();
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -119,34 +137,84 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     private void addMarkers() {
-        for(Activity activity:this.route.getActivities()) {
-            LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
-            MarkerOptions marker = new MarkerOptions().position(position);
-            switch (activity.getState()) {
-                case IN_PROGRESS:
-                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    break;
-                case AVAILABLE:
-                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    break;
-                case COMPLETE:
-                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    break;
-                case INACTIVE:
-                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                    break;
+        if(this.activities != null) {
+            for (Activity activity : this.route.getActivities(this)) {
+                LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
+                MarkerOptions marker = new MarkerOptions().position(position);
+                switch (activity.getState()) {
+                    case IN_PROGRESS:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        break;
+                    case AVAILABLE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        break;
+                    case COMPLETE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        break;
+                    case INACTIVE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                        break;
+                }
+                this.markers.put(mMap.addMarker(marker), activity);
             }
-            this.markers.put(mMap.addMarker(marker), activity);
         }
-        if(this.markers.size() > 0) {
+        if (this.markers.size() > 0) {
             Activity activity = null;
             Iterator<Marker> iterator = this.markers.keySet().iterator();
-            if(iterator.hasNext()){
-                activity = this.markers.get( iterator.next() );
+            if (iterator.hasNext()) {
+                activity = this.markers.get(iterator.next());
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activity.getLatitude(), activity.getLongitude()), 15));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.385750, -0.514250), 15));
         }
+    }
+
+    public void changeActivityState() {
+        mMap.clear();
+        this.route = AppDatabase.getDatabase(getApplicationContext()).daoApp().loadRouteById(this.route.getUid());
+        this.activities = this.route.getActivities(this);
+        Activity changedActivity = null;
+        boolean changeActivity = false;
+        for(Activity a:this.activities) {
+            if(a.getState() != State.COMPLETE) {
+                if(a.getState() != State.IN_PROGRESS) {
+                    if(a.getState() != State.AVAILABLE) {
+                        if(a.getState() == State.INACTIVE) {
+                            a.setState(State.AVAILABLE);
+                            changedActivity = a;
+                            changeActivity = true;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if(changeActivity == true){
+            AppDatabase.getDatabase(getApplicationContext()).daoApp().updateActivity(changedActivity);
+        }
+
+        if(this.route.getState() == State.AVAILABLE){
+            for(Activity a:this.activities) {
+                if(a.getState() == State.IN_PROGRESS || a.getState() == State.COMPLETE) {
+                    this.route.setState(State.IN_PROGRESS);
+                    AppDatabase.getDatabase(getApplicationContext()).daoApp().updateRoute(this.route);
+                }
+            }
+        } else if(this.route.getState() == State.IN_PROGRESS) {
+            int numActivitiesComplete = 0;
+            for(Activity a:this.activities) {
+                if(a.getState() == State.COMPLETE) {
+                    numActivitiesComplete++;
+                }
+            }
+            if(numActivitiesComplete == this.activities.size()) {
+                this.route.setState(State.COMPLETE);
+                AppDatabase.getDatabase(getApplicationContext()).daoApp().updateRoute(this.route);
+            }
+        }
+
+        addMarkers();
     }
 }

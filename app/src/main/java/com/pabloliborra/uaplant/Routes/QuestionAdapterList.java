@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
+import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,14 +37,16 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
     private TextView subtitleAlert;
     private Button acceptButtonAlert, closeButtonAlert;
 
+    private Activity activity;
     private Plant plant;
 
     // RecyclerView recyclerView;
-    public QuestionAdapterList(Context context, List<QuestionListItem> listQuestions, Plant plant) {
+    public QuestionAdapterList(Context context, List<QuestionListItem> listQuestions, Activity activity) {
         this.context = context;
         this.listQuestions = listQuestions;
         this.itemHolders = new ArrayList<>();
-        this.plant = plant;
+        this.activity = activity;
+        this.plant = activity.getPlant(context);
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -77,6 +81,14 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
                 }
                 if(position == this.itemHolders.size() - 1) {
                     if(this.testCompleted == true) {
+                        this.activity.setState(State.COMPLETE);
+                        Plant plant = this.activity.getPlant(context);
+                        System.out.println(plant.isUnlock());
+                        plant.setUnlock(true);
+                        System.out.println(plant.isUnlock());
+
+                        AppDatabase.getDatabaseMain(this.context).daoApp().updatePlant(plant);
+                        AppDatabase.getDatabaseMain(this.context).daoApp().updateActivity(this.activity);
                         this.createDialogTestCompleted();
                     } else {
                         this.createDialogTestError();

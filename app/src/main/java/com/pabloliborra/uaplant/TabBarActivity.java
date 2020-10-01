@@ -28,7 +28,7 @@ public class TabBarActivity extends AppCompatActivity {
 
         mTopToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(mTopToolbar);
-        setTitle("Listas");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.view_pager);

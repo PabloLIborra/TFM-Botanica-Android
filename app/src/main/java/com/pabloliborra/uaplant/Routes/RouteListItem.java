@@ -1,6 +1,9 @@
 package com.pabloliborra.uaplant.Routes;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.pabloliborra.uaplant.Utils.State;
 
 public class RouteListItem {
     private Route route;
@@ -9,12 +12,17 @@ public class RouteListItem {
     private int completeActivities;
     private int totalActivities;
 
-    public RouteListItem(Route route) {
+    public RouteListItem(Route route, Context context, int numActivities) {
         this.route = route;
         this.title = route.getTitle();
         this.description = route.getDescription();
         this.completeActivities = 0;
-        this.totalActivities = route.getActivities().size();
+        for(Activity a:route.getActivities(context)) {
+            if(a.getState() == State.COMPLETE) {
+                this.completeActivities++;
+            }
+        }
+        this.totalActivities = numActivities;
         Log.d("Actividades", String.valueOf(this.totalActivities));
     }
 

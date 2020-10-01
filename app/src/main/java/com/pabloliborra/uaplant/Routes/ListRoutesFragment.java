@@ -1,33 +1,35 @@
 package com.pabloliborra.uaplant.Routes;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class ListRoutesFragment extends Fragment {
     private RecyclerView recyclerView;
     private RouteAdapterList adapter;
-    private List<RouteListItem> routes;
+    private List<RouteListItem> itemRoutes;
+    private List<Route> routes = new ArrayList<>();
+    private List<Activity> activities = new ArrayList<>();
+
 
     private List<String> sectionsName = new ArrayList<String>() {{
         add("En Proceso");
@@ -61,49 +63,43 @@ public class ListRoutesFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         this.recyclerView.setLayoutManager(manager);
 
-        this.sections = this.createSectionsData();
-        this.routes = new ArrayList<>();
+        this.sections = this.createSectionsData(this.getActivity());
+        this.itemRoutes = new ArrayList<>();
         for(RoutesSection section:this.sections) {
             for (RouteListItem route : section.getRoutesList()) {
-                this.routes.add(route);
+                this.itemRoutes.add(route);
             }
         }
-        this.adapter = new RouteAdapterList(this.getActivity(), this.sections, this.routes);
+        this.adapter = new RouteAdapterList(this.getActivity(), this.sections, this.itemRoutes);
         this.recyclerView.setAdapter(this.adapter);
     }
 
-    private List<RoutesSection> createSectionsData() {
+    private List<RoutesSection> createSectionsData(Context context) {
         List<RoutesSection> sections = new ArrayList<>();
 
-        List<String> answers = new ArrayList<>();
-        answers.add("Prueba");
-        answers.add("Arbol");
-        answers.add("Planta");
+        List<Route> routes = AppDatabase.getDatabase(getContext()).daoApp().getAllRoutes();
+        List<Activity> activities = AppDatabase.getDatabase(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
 
-        Plant plant = new Plant("Cupressus sempervirens", "Cupressaceae", "Informacion", false);
+        List<RouteListItem> inProcessItem = new ArrayList<>();
+        List<RouteListItem> availableItem = new ArrayList<>();
+        List<RouteListItem> completeItem = new ArrayList<>();
+        for(Route r:routes) {
+            switch (r.getState()) {
+                case IN_PROGRESS:
+                    inProcessItem.add(new RouteListItem(r, this.getActivity(), activities.size()));
+                    break;
+                case AVAILABLE:
+                    availableItem.add(new RouteListItem(r, this.getActivity(), activities.size()));
+                    break;
+                case COMPLETE:
+                    completeItem.add(new RouteListItem(r, this.getActivity(), activities.size()));
+                    break;
+            }
+        }
 
-        List<Question> questions = new ArrayList<>();
-        Question question = new Question("Hábito", answers, "Arbol");
-        questions.add(question);
-
-        List<Activity> activities = new ArrayList<>();
-        Activity activity = new Activity("Prueba", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion", new Date(), questions, plant);
-        activities.add(activity);
-        Activity activity2 = new Activity("Prueba2", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date(), questions, plant);
-        activities.add(activity2);
-
-        Route route = new Route("Gimnospermas", "Información de prueba", State.AVAILABLE, activities);
-        activity.setRoute(route);
-
-        List<RouteListItem> items = new ArrayList<>();
-        items.add(new RouteListItem(route));
-        items.add(new RouteListItem(route));
-        items.add(new RouteListItem(route));
-        items.add(new RouteListItem(route));
-
-        sections.add(new RoutesSection(R.drawable.inprocess_route_icon, this.sectionsName.get(0), items));
-        sections.add(new RoutesSection(R.drawable.new_route_icon, this.sectionsName.get(1), items));
-        sections.add(new RoutesSection(R.drawable.completed_route_icon, this.sectionsName.get(2), items));
+        sections.add(new RoutesSection(R.drawable.inprocess_route_icon, this.sectionsName.get(0), inProcessItem));
+        sections.add(new RoutesSection(R.drawable.new_route_icon, this.sectionsName.get(1), availableItem));
+        sections.add(new RoutesSection(R.drawable.completed_route_icon, this.sectionsName.get(2), completeItem));
 
         return sections;
     }

@@ -37,7 +37,6 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
         holder.title.setText(this.routesList.get(position).getTitle());
         holder.description.setText(this.routesList.get(position).getDescription());
         holder.numActivities.setText(this.routesList.get(position).getCompleteActivities() + "/" + this.routesList.get(position).getTotalActivities());
-
     }
 
     @Override
