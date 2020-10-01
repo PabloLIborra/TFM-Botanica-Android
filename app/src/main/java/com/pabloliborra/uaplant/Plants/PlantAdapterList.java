@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.Utils.Constants;
 
 import java.util.List;
 
@@ -55,9 +56,9 @@ public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.Recy
 
     @Override
     public void onPlantClick(View v, int position) {
-        /*Intent intent = new Intent(this.activity, RoutesMap.class);
-        intent.putExtra(Constants.routeExtraTitle, this.plants.get(position).getRoute());
-        this.activity.startActivity(intent);*/
+        Intent intent = new Intent(this.activity, PlantDetailActivity.class);
+        intent.putExtra(Constants.plantExtraTitle, this.plants.get(position).getPlant());
+        this.activity.startActivity(intent);
     }
 
     public class RecyclerPlantHolder extends RecyclerView.ViewHolder {

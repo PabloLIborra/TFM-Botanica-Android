@@ -69,7 +69,6 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     protected void onRestart() {
         super.onRestart();
-
         changeActivityState();
     }
 
