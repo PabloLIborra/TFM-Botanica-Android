@@ -10,6 +10,7 @@ public class RouteListItem {
     private String title;
     private String description;
     private int completeActivities;
+    private int inProgressActivities;
     private int totalActivities;
 
     public RouteListItem(Route route, Context context, int numActivities) {
@@ -20,6 +21,8 @@ public class RouteListItem {
         for(Activity a:route.getActivities(context)) {
             if(a.getState() == State.COMPLETE) {
                 this.completeActivities++;
+            } else if(a.getState() == State.IN_PROGRESS) {
+                this.inProgressActivities++;
             }
         }
         this.totalActivities = numActivities;
@@ -36,6 +39,10 @@ public class RouteListItem {
 
     public int getCompleteActivities() {
         return this.completeActivities;
+    }
+    
+    public int getInProgressActivities() {
+        return this.inProgressActivities;
     }
 
     public int getTotalActivities() {

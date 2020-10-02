@@ -72,14 +72,14 @@ public class ListPlantsFragment extends Fragment {
                 this.itemPlants.add(p);
             }
         }
-        this.adapter = new PlantAdapterList(this.getActivity(), this.sections, this.itemPlants);
+        this.adapter = new PlantAdapterList(this.getContext(), this.getActivity(), this.sections, this.itemPlants);
         this.recyclerView.setAdapter(this.adapter);
     }
 
     private List<PlantsSection> createSectionsData(Context context) {
         List<PlantsSection> sections = new ArrayList<>();
 
-        List<Plant> plants = AppDatabase.getDatabase(getContext()).daoApp().getAllPlants();
+        List<Plant> plants = AppDatabase.getDatabaseMain(getContext()).daoApp().getAllPlants();
 
         List<PlantListItem> items = new ArrayList<>();
         for(Plant p:plants) {

@@ -172,7 +172,7 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
 
     public void changeActivityState() {
         mMap.clear();
-        this.route = AppDatabase.getDatabase(getApplicationContext()).daoApp().loadRouteById(this.route.getUid());
+        this.route = AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().loadRouteById(this.route.getUid());
         this.activities = this.route.getActivities(this);
         Activity changedActivity = null;
         boolean changeActivity = false;
@@ -192,27 +192,7 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         }
 
         if(changeActivity == true){
-            AppDatabase.getDatabase(getApplicationContext()).daoApp().updateActivity(changedActivity);
-        }
-
-        if(this.route.getState() == State.AVAILABLE){
-            for(Activity a:this.activities) {
-                if(a.getState() == State.IN_PROGRESS || a.getState() == State.COMPLETE) {
-                    this.route.setState(State.IN_PROGRESS);
-                    AppDatabase.getDatabase(getApplicationContext()).daoApp().updateRoute(this.route);
-                }
-            }
-        } else if(this.route.getState() == State.IN_PROGRESS) {
-            int numActivitiesComplete = 0;
-            for(Activity a:this.activities) {
-                if(a.getState() == State.COMPLETE) {
-                    numActivitiesComplete++;
-                }
-            }
-            if(numActivitiesComplete == this.activities.size()) {
-                this.route.setState(State.COMPLETE);
-                AppDatabase.getDatabase(getApplicationContext()).daoApp().updateRoute(this.route);
-            }
+            AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().updateActivity(changedActivity);
         }
 
         addMarkers();

@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:text="Para poder visualizar esta planta necesitas desbloquearla. Para ello debes completar la siguiente actividad."
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="13sp" />

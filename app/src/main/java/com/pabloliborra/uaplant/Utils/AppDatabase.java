@@ -26,18 +26,6 @@ public abstract class AppDatabase extends RoomDatabase {
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    public static AppDatabase getDatabase(final Context context) {
-        if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, DATABASE_NAME)
-                            .build();
-                }
-            }
-        }
-        return INSTANCE;
-    }
     public static AppDatabase getDatabaseMain(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {

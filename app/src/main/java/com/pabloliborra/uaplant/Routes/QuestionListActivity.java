@@ -35,8 +35,8 @@ public class QuestionListActivity extends AppCompatActivity {
         this.activity = (Activity) getIntent().getSerializableExtra(Constants.activityExtraTitle);
 
         List<QuestionListItem> questions = new ArrayList<>();
-        List<Activity> ac = AppDatabase.getDatabase(this).daoApp().getAllActivities();
-        List<Question> questions2 = AppDatabase.getDatabase(this).daoApp().getAllQuestions();
+        List<Activity> ac = AppDatabase.getDatabaseMain(this).daoApp().getAllActivities();
+        List<Question> questions2 = AppDatabase.getDatabaseMain(this).daoApp().getAllQuestions();
         for (Question q : this.activity.getQuestions(this)) {
             questions.add(new QuestionListItem(q));
         }

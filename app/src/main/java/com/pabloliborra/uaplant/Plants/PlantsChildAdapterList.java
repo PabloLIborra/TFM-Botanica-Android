@@ -1,6 +1,7 @@
 package com.pabloliborra.uaplant.Plants;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -40,12 +41,8 @@ public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdap
     public void onBindViewHolder(@NonNull RecyclerPlantHolder holder, int position) {
         holder.title.setText(this.plantsList.get(position).getTitle());
         if(this.plantsList.get(position).getPlant().isUnlock() == true) {
-            holder.cardView.setClickable(true);
-            holder.cardView.setFocusable(true);
             holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.colorCeldaPlantas));
         } else {
-            holder.cardView.setClickable(false);
-            holder.cardView.setFocusable(false);
             holder.cardView.setCardBackgroundColor(Color.GRAY);
         }
     }

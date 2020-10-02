@@ -72,7 +72,7 @@ public class ActivityDetailActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        this.activity = AppDatabase.getDatabase(getApplicationContext()).daoApp().loadActivityById(this.activity.getUid());
+        this.activity = AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().loadActivityById(this.activity.getUid());
         this.setState();
     }
 

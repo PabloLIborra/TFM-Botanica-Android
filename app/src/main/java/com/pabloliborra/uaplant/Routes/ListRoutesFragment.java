@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,8 +28,10 @@ public class ListRoutesFragment extends Fragment {
     private RecyclerView recyclerView;
     private RouteAdapterList adapter;
     private List<RouteListItem> itemRoutes;
-    private List<Route> routes = new ArrayList<>();
-    private List<Activity> activities = new ArrayList<>();
+
+    List<RouteListItem> inProcessItem = new ArrayList<>();
+    List<RouteListItem> availableItem = new ArrayList<>();
+    List<RouteListItem> completeItem = new ArrayList<>();
 
 
     private List<String> sectionsName = new ArrayList<String>() {{
@@ -46,6 +49,12 @@ public class ListRoutesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_routes, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkRoutes();
     }
 
     @Override
@@ -77,16 +86,17 @@ public class ListRoutesFragment extends Fragment {
     private List<RoutesSection> createSectionsData(Context context) {
         List<RoutesSection> sections = new ArrayList<>();
 
-        List<Route> routes = AppDatabase.getDatabase(getContext()).daoApp().getAllRoutes();
+        List<Route> routes = AppDatabase.getDatabaseMain(getContext()).daoApp().getAllRoutes();
 
         List<Activity> activities = new ArrayList<>();
         if(routes != null && routes.size() > 0) {
-            activities = AppDatabase.getDatabase(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
+            activities = AppDatabase.getDatabaseMain(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
         }
 
-        List<RouteListItem> inProcessItem = new ArrayList<>();
-        List<RouteListItem> availableItem = new ArrayList<>();
-        List<RouteListItem> completeItem = new ArrayList<>();
+        this.availableItem.clear();
+        this.inProcessItem.clear();
+        this.completeItem.clear();
+
         for(Route r:routes) {
             switch (r.getState()) {
                 case IN_PROGRESS:
@@ -106,5 +116,49 @@ public class ListRoutesFragment extends Fragment {
         sections.add(new RoutesSection(R.drawable.completed_route_icon, this.sectionsName.get(2), completeItem));
 
         return sections;
+    }
+
+    private void checkRoutes() {
+        for(RouteListItem item:this.completeItem) {
+            if(item.getCompleteActivities() == 0) {
+                item.getRoute().setState(State.AVAILABLE);
+                this.availableItem.add(item);
+                this.completeItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            } else if(item.getCompleteActivities() > 0 || item.getInProgressActivities() > 0) {
+                item.getRoute().setState(State.IN_PROGRESS);
+                this.inProcessItem.add(item);
+                this.completeItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            }
+        }
+
+        for(RouteListItem item:this.inProcessItem) {
+            if(item.getCompleteActivities() == 0) {
+                item.getRoute().setState(State.AVAILABLE);
+                this.availableItem.add(item);
+                this.inProcessItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            } else if(item.getCompleteActivities() == item.getTotalActivities()) {
+                item.getRoute().setState(State.COMPLETE);
+                this.completeItem.add(item);
+                this.inProcessItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            }
+        }
+
+        for(RouteListItem item:this.availableItem) {
+            if(item.getCompleteActivities() > 0 || item.getInProgressActivities() > 0) {
+                item.getRoute().setState(State.IN_PROGRESS);
+                this.inProcessItem.add(item);
+                this.availableItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            } else if(item.getCompleteActivities() == item.getTotalActivities()) {
+                item.getRoute().setState(State.COMPLETE);
+                this.completeItem.add(item);
+                this.availableItem.remove(item);
+                AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
+            }
+        }
     }
 }
