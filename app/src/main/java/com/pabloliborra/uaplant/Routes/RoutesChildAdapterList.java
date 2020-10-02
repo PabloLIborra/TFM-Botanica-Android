@@ -37,6 +37,13 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
         holder.title.setText(this.routesList.get(position).getTitle());
         holder.description.setText(this.routesList.get(position).getDescription());
         holder.numActivities.setText(this.routesList.get(position).getCompleteActivities() + "/" + this.routesList.get(position).getTotalActivities());
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -72,5 +79,4 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
     public interface OnRouteClickListener {
         void onRouteClick(View v, int position);
     }
-
 }

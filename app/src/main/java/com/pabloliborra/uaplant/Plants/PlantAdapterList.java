@@ -43,7 +43,13 @@ public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.Recy
         List<PlantListItem> plants = section.getPlantsList();
 
         holder.titleSection.setText(section.getSectionTitle());
-        holder.numPlantsSection.setText(String.valueOf(section.getPlantsList().size()));
+        int unlockPlants = 0;
+        for(PlantListItem item:section.getPlantsList()) {
+            if(item.getPlant().isUnlock() == true) {
+                unlockPlants++;
+            }
+        }
+        holder.numPlantsSection.setText(unlockPlants + "/" + section.getPlantsList().size());
 
         PlantsChildAdapterList childAdapter = new PlantsChildAdapterList(this.activity, plants, this);
         holder.childRecyclerView.setAdapter(childAdapter);

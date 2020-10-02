@@ -78,7 +78,11 @@ public class ListRoutesFragment extends Fragment {
         List<RoutesSection> sections = new ArrayList<>();
 
         List<Route> routes = AppDatabase.getDatabase(getContext()).daoApp().getAllRoutes();
-        List<Activity> activities = AppDatabase.getDatabase(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
+
+        List<Activity> activities = new ArrayList<>();
+        if(routes != null && routes.size() > 0) {
+            activities = AppDatabase.getDatabase(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
+        }
 
         List<RouteListItem> inProcessItem = new ArrayList<>();
         List<RouteListItem> availableItem = new ArrayList<>();

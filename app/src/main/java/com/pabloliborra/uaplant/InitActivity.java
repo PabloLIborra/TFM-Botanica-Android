@@ -48,7 +48,6 @@ public class InitActivity extends AppCompatActivity {
         });
 
         createData();
-
     }
 
     private void startButton() {
@@ -75,7 +74,7 @@ public class InitActivity extends AppCompatActivity {
                 routes = AppDatabase.getDatabase(getApplicationContext()).daoApp().getAllRoutes();
 
                 List<Activity> activities = new ArrayList<>();
-                Activity activity = new Activity("Prueba", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion", new Date(), routes.get(0).getUid());
+                Activity activity = new Activity("Actividad", "Subtitulo", State.AVAILABLE, 38.3864202198746, -0.514705561099236, "Informacion de la actividad.", new Date(), routes.get(0).getUid());
                 activities.add(activity);
                 Activity activity2 = new Activity("Prueba2", "Subtitulo", State.INACTIVE, 38.38642023, -0.52, "Informacion", new Date(), routes.get(0).getUid());
                 activities.add(activity2);
