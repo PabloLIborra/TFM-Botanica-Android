@@ -12,24 +12,57 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/titleAlert"
+            android:id="@+id/titleAlertInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Eliminar"
+            android:text="Planta Bloqueada"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/subtitleAlert"
+            android:id="@+id/subtitleAlertInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text='¿Desea eliminar el itinerario  \n"Nombre itinerario"?\n\n  Si realiza esta acción perderá todo su progreso, pero podrá volver a descargarla pulsando el botón de descarga de la barra de navegación.'
-            android:textAlignment="center"
+            android:text="Para poder visualizar esta planta necesitas desbloquearla. Para ello debes completar la siguiente actividad."
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
+
+        <TextView
+            android:id="@+id/routeAlertInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text='Itinerario\n"Nombre itinerario"'
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
+
+        <TextView
+            android:id="@+id/activityAlertInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text='Actividad\n"Nombre actividad"'
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="13sp" />
 
         <View
             android:id="@+id/divider"
@@ -50,36 +83,18 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/buttonAcceptAlert"
+                    android:id="@+id/buttonCloseAlertInfo"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/rounded_button_second"
-                    android:text="Ver"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@drawable/text_color_button_white"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toStartOf="@+id/buttonCloseAlert"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/buttonCloseAlert"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginEnd="70dp"
                     android:background="@drawable/rounded_button_second"
                     android:text="Cerrar"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@drawable/text_color_button_white"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/buttonAcceptAlert"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
