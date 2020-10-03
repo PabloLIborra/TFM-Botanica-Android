@@ -1,22 +1,31 @@
 package com.pabloliborra.uaplant;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.pabloliborra.uaplant.pagecontroller.PagerController;
 
 public class TabBarActivity extends AppCompatActivity {
+    private String ACTIVITY_TAG = "Tab Bar Principal";
     private Toolbar mTopToolbar;
 
     TabLayout tabLayout;
     ViewPager viewPager;
     TabItem routesTab, plantsTab, creditsTab;
+    ImageButton reportButton;
     PagerController pagerAdapter;
 
     @Override
@@ -36,6 +45,14 @@ public class TabBarActivity extends AppCompatActivity {
         routesTab = findViewById(R.id.routesTab);
         plantsTab = findViewById(R.id.plantsTab);
         creditsTab = findViewById(R.id.creditsTab);
+
+        final ImageButton reportButton = findViewById(R.id.reportButton);
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmailReport();
+            }
+        });
 
         pagerAdapter = new PagerController(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
@@ -65,5 +82,13 @@ public class TabBarActivity extends AppCompatActivity {
             }
         });
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
+    private void sendEmailReport() {
+        Intent i = new Intent(Intent.ACTION_SENDTO);
+        i.setType("message/rfc822");
+        i.setData(Uri.parse("mailto:?subject=" + "Reportar error en " + '"' + ACTIVITY_TAG + '"' + "&to=" + "uaplant.app@gmail.com"));
+
+        startActivity(Intent.createChooser(i, "Enviar email"));
     }
 }

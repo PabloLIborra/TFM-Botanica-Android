@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -52,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
-
+    private String ACTIVITY_TAG = "Mapa Actividad";
     private Route route;
     private GoogleMap mMap;
 
@@ -88,6 +89,14 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
             }
         });
 
+        final ImageButton reportButton = findViewById(R.id.reportButton);
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmailReport();
+            }
+        });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -107,6 +116,14 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendEmailReport() {
+        Intent i = new Intent(Intent.ACTION_SENDTO);
+        i.setType("message/rfc822");
+        i.setData(Uri.parse("mailto:?subject=" + "Reportar error en " + '"' + ACTIVITY_TAG + '"' + "&to=" + "uaplant.app@gmail.com"));
+
+        startActivity(Intent.createChooser(i, "Enviar email"));
     }
 
     private void showInformationAlert() {

@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.State;
 
 public class ActivityDetailActivity extends AppCompatActivity {
+    private String ACTIVITY_TAG = "Detalle Actividad";
 
     TextView titleActivity, descriptionActivity, state;
     ImageView locationImage, stateImage;
@@ -65,6 +68,14 @@ public class ActivityDetailActivity extends AppCompatActivity {
                 startQuestions();
             }
         });
+
+        final ImageButton reportButton = findViewById(R.id.reportButton);
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmailReport();
+            }
+        });
     }
 
     @Override
@@ -81,6 +92,14 @@ public class ActivityDetailActivity extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendEmailReport() {
+        Intent i = new Intent(Intent.ACTION_SENDTO);
+        i.setType("message/rfc822");
+        i.setData(Uri.parse("mailto:?subject=" + "Reportar error en " + '"' + ACTIVITY_TAG + '"' + "&to=" + "uaplant.app@gmail.com"));
+
+        startActivity(Intent.createChooser(i, "Enviar email"));
     }
 
     private void startActivity() {
