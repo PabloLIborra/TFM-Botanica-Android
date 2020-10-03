@@ -3,6 +3,7 @@ package com.pabloliborra.uaplant.Routes;
 import android.content.Context;
 import android.util.Log;
 
+import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.State;
 
 public class RouteListItem {
@@ -25,6 +26,14 @@ public class RouteListItem {
                 this.inProgressActivities++;
             }
         }
+        if(this.completeActivities == this.totalActivities && this.inProgressActivities == 0 && this.route.getState() != State.COMPLETE) {
+            this.route.setState(State.COMPLETE);
+            AppDatabase.getDatabaseMain(context).daoApp().updateRoute(this.route);
+        } else if(this.inProgressActivities > 0 && this.route.getState() != State.IN_PROGRESS) {
+            this.route.setState(State.IN_PROGRESS);
+            AppDatabase.getDatabaseMain(context).daoApp().updateRoute(this.route);
+        }
+
         this.totalActivities = numActivities;
         Log.d("Actividades", String.valueOf(this.totalActivities));
     }

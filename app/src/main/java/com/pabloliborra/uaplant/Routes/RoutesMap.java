@@ -1,14 +1,26 @@
 package com.pabloliborra.uaplant.Routes;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.TextViewCompat;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,7 +37,10 @@ import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.CustomInfoWindowAdapter;
+import com.pabloliborra.uaplant.Utils.MessageEvent;
 import com.pabloliborra.uaplant.Utils.State;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,6 +61,9 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
     private Marker tappedMarker;
     private Activity activityTapped;
 
+    private AlertDialog.Builder builder;
+    private ImageButton informationButton;
+
     private List<Activity> activities;
 
     @Override
@@ -60,6 +78,15 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         setTitle("Itinerarios");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        this.informationButton = findViewById(R.id.infoButton);
+        this.informationButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                showInformationAlert();
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,6 +107,29 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showInformationAlert() {
+        builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.custom_dialog_info_map, viewGroup, false);
+
+        TextView titleAlert = dialogView.findViewById(R.id.nameAlert);
+        TextView subtitleAlert = dialogView.findViewById(R.id.informationAlert);
+        Button closeButtonAlert = dialogView.findViewById(R.id.buttonCloseAlert);
+
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        titleAlert.setText(this.route.getTitle());
+        subtitleAlert.setText(this.route.getDescription());
+        closeButtonAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 
     /**
@@ -136,46 +186,11 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         }
     }
 
-    private void addMarkers() {
-        this.activities = this.route.getActivities(this);
-        Collections.sort(this.activities);
-        if(this.activities != null) {
-            for (Activity activity : this.activities) {
-                LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
-                MarkerOptions marker = new MarkerOptions().position(position);
-                switch (activity.getState()) {
-                    case IN_PROGRESS:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        break;
-                    case AVAILABLE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        break;
-                    case COMPLETE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                        break;
-                    case INACTIVE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                        break;
-                }
-                this.markers.put(mMap.addMarker(marker), activity);
-            }
-        }
-        if (this.markers.size() > 0) {
-            Activity activity = null;
-            Iterator<Marker> iterator = this.markers.keySet().iterator();
-            if (iterator.hasNext()) {
-                activity = this.markers.get(iterator.next());
-            }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activity.getLatitude(), activity.getLongitude()), 15));
-        } else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.385750, -0.514250), 15));
-        }
-    }
-
     public void changeActivityState() {
         mMap.clear();
         this.route = AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().loadRouteById(this.route.getUid());
         this.activities = this.route.getActivities(this);
+        Collections.sort(this.activities);
         Activity changedActivity = null;
         boolean changeActivity = false;
         for(Activity a:this.activities) {
@@ -198,5 +213,45 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         }
 
         addMarkers();
+    }
+
+    private void addMarkers() {
+        if(this.activities != null) {
+            boolean showInfoAlert = true;
+            for (Activity activity : this.activities) {
+                LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
+                MarkerOptions marker = new MarkerOptions().position(position);
+                switch (activity.getState()) {
+                    case IN_PROGRESS:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        showInfoAlert = false;
+                        break;
+                    case AVAILABLE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        break;
+                    case COMPLETE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        showInfoAlert = false;
+                        break;
+                    case INACTIVE:
+                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                        break;
+                }
+                this.markers.put(mMap.addMarker(marker), activity);
+            }
+            if(showInfoAlert == true) {
+                this.showInformationAlert();
+            }
+        }
+        if (this.markers.size() > 0) {
+            Activity activity = null;
+            Iterator<Marker> iterator = this.markers.keySet().iterator();
+            if (iterator.hasNext()) {
+                activity = this.markers.get(iterator.next());
+            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activity.getLatitude(), activity.getLongitude()), 15));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.385750, -0.514250), 15));
+        }
     }
 }

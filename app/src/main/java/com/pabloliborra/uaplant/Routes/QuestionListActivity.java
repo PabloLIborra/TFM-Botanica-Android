@@ -34,15 +34,14 @@ public class QuestionListActivity extends AppCompatActivity {
 
         this.activity = (Activity) getIntent().getSerializableExtra(Constants.activityExtraTitle);
 
-        List<QuestionListItem> questions = new ArrayList<>();
-        List<Activity> ac = AppDatabase.getDatabaseMain(this).daoApp().getAllActivities();
-        List<Question> questions2 = AppDatabase.getDatabaseMain(this).daoApp().getAllQuestions();
-        for (Question q : this.activity.getQuestions(this)) {
-            questions.add(new QuestionListItem(q));
+        List<QuestionListItem> questionsList = new ArrayList<>();
+        List<Question> questions = this.activity.getQuestions(this);
+        for (Question q : questions) {
+            questionsList.add(new QuestionListItem(q));
         }
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerQuestionList);
-        QuestionAdapterList adapter = new QuestionAdapterList(this, questions, this.activity);
+        QuestionAdapterList adapter = new QuestionAdapterList(this, questionsList, this.activity);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

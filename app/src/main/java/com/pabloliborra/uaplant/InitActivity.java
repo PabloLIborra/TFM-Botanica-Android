@@ -78,11 +78,6 @@ public class InitActivity extends AppCompatActivity {
                                 "preguntas sobre caracteres morfológicos visibles, que nos llevarán al nombre de la especie.\n",
                         new Date(), routes.get(0).getUid());
                 activities.add(activity);
-                Activity activity2 = new Activity("Prueba2", "Subtitulo",
-                        State.INACTIVE, 38.38642023, -0.52,
-                        "Informacion",
-                        new Date(), routes.get(0).getUid());
-                activities.add(activity2);
 
                 for(Activity a:activities) {
                     AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().insertAllActivities(a);
@@ -91,7 +86,7 @@ public class InitActivity extends AppCompatActivity {
                 activities = AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().getAllActivities();
 
                 final List<Plant> plants = new ArrayList<>();
-                Plant plant = new Plant("pCupressus sempervirens", "Cupressaceae",
+                Plant plant = new Plant("Cupressus sempervirens", "Cupressaceae",
                         "Nombre común: Ciprés\n\nEtimología. El nombre del género Cupressus, parece que deriva del nombre latino “Cyprus” (Chipre), " +
                                 "lugar donde es nativo y crece silvestre. El epíteto específico sempervirens, hace referencia a que las hojas son perennes y " +
                                 "la planta siempre se muestra verde.\n\nOrigen y distribución. Es originario del Mediterráneo oriental. Pero desde la antigüedad " +
@@ -107,8 +102,6 @@ public class InitActivity extends AppCompatActivity {
                                 "cementerios y monumentos funerarios.\n\nProtección. Está calificada como LC (“preocupación menor”) por la UICN.",
                         false, activities.get(0).getUid());
                 plants.add(plant);
-                Plant plant2 = new Plant("Cupressus sempervirens2", "Cupressaceae", "Informacion", false, activities.get(1).getUid());
-                plants.add(plant2);
 
                 for(Plant p:plants) {
                     AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().insertAllPlants(p);
@@ -117,8 +110,6 @@ public class InitActivity extends AppCompatActivity {
                 final List<Question> questions = new ArrayList<>();
                 Question question = new Question("Hábito", answers, "Arbol", activities.get(0).getUid());
                 questions.add(question);
-                Question question2 = new Question("Hábito2", answers, "Arbol", activities.get(1).getUid());
-                questions.add(question2);
 
                 for(Question q:questions) {
                     AppDatabase.getDatabaseMain(getApplicationContext()).daoApp().insertAllQuestions(q);
