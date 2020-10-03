@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +22,13 @@ import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class ListRoutesFragment extends Fragment {
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RouteAdapterList adapter;
     private List<RouteListItem> itemRoutes;
 
@@ -66,6 +69,15 @@ public class ListRoutesFragment extends Fragment {
 
     private void initView() {
         this.recyclerView = getView().findViewById(R.id.listRoutes);
+        this.swipeRefreshLayout = getView().findViewById(R.id.refreshRoutes);
+        this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initRoutesList();
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void initRoutesList() {
@@ -87,6 +99,7 @@ public class ListRoutesFragment extends Fragment {
         List<RoutesSection> sections = new ArrayList<>();
 
         List<Route> routes = AppDatabase.getDatabaseMain(getContext()).daoApp().getAllRoutes();
+        Collections.sort(routes);
 
         List<Activity> activities = new ArrayList<>();
         if(routes != null && routes.size() > 0) {

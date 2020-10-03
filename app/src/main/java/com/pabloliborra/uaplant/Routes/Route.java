@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Relationships;
 import com.pabloliborra.uaplant.Utils.StateConverter;
@@ -17,7 +18,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 @Entity
-public class Route implements Serializable {
+public class Route implements Serializable, Comparable<Route> {
     @PrimaryKey(autoGenerate = true)
     private long uid;
     private String title;
@@ -65,5 +66,13 @@ public class Route implements Serializable {
 
     public List<Activity> getActivities(final Context context) {
         return AppDatabase.getDatabaseMain(context).daoApp().loadActivityByRouteId(getUid());
+    }
+
+    @Override
+    public int compareTo(Route o) {
+        if (title == null || o.title == null) {
+            return 0;
+        }
+        return title.compareTo(o.title);
     }
 }

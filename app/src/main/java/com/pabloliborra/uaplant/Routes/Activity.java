@@ -1,7 +1,6 @@
 package com.pabloliborra.uaplant.Routes;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,12 +9,10 @@ import androidx.room.TypeConverters;
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.DataConverter;
-import com.pabloliborra.uaplant.Utils.Relationships;
 import com.pabloliborra.uaplant.Utils.StateConverter;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 

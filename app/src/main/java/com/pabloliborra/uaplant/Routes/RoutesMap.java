@@ -29,6 +29,8 @@ import com.pabloliborra.uaplant.Utils.State;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,8 +60,6 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         setTitle("Itinerarios");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        this.activities = this.route.getActivities(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -137,8 +137,10 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     private void addMarkers() {
+        this.activities = this.route.getActivities(this);
+        Collections.sort(this.activities);
         if(this.activities != null) {
-            for (Activity activity : this.route.getActivities(this)) {
+            for (Activity activity : this.activities) {
                 LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
                 MarkerOptions marker = new MarkerOptions().position(position);
                 switch (activity.getState()) {

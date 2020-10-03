@@ -51,7 +51,7 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        listItem= layoutInflater.inflate(R.layout.item_list_question, parent, false);
+        listItem = layoutInflater.inflate(R.layout.item_list_question, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);
 
         return viewHolder;

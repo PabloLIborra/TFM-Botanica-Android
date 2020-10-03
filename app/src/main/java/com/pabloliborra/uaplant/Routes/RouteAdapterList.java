@@ -49,7 +49,7 @@ public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.Recy
         holder.titleSection.setText(section.getSectionTitle());
         holder.numActivitiesSection.setText(String.valueOf(section.getRoutesList().size()));
 
-        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(this.activity, routes, this);
+        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(this.activity, routes, this, this);
         holder.childRecyclerView.setAdapter(childAdapter);
     }
 
