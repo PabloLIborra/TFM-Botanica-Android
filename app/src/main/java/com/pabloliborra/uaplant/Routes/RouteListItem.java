@@ -26,6 +26,9 @@ public class RouteListItem {
                 this.inProgressActivities++;
             }
         }
+
+        this.totalActivities = numActivities;
+
         if(this.completeActivities == this.totalActivities && this.inProgressActivities == 0 && this.route.getState() != State.COMPLETE) {
             this.route.setState(State.COMPLETE);
             AppDatabase.getDatabaseMain(context).daoApp().updateRoute(this.route);
@@ -34,7 +37,6 @@ public class RouteListItem {
             AppDatabase.getDatabaseMain(context).daoApp().updateRoute(this.route);
         }
 
-        this.totalActivities = numActivities;
         Log.d("Actividades", String.valueOf(this.totalActivities));
     }
 

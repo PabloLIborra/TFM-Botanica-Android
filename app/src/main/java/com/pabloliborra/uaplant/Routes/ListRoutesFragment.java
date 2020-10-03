@@ -15,11 +15,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
+import com.pabloliborra.uaplant.Utils.MessageEvent;
 import com.pabloliborra.uaplant.Utils.State;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +37,8 @@ public class ListRoutesFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RouteAdapterList adapter;
     private List<RouteListItem> itemRoutes;
+
+    private TextView textTotalRoutes, textTotalActivities;
 
     List<RouteListItem> inProcessItem = new ArrayList<>();
     List<RouteListItem> availableItem = new ArrayList<>();
@@ -55,6 +63,18 @@ public class ListRoutesFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         checkRoutes();
@@ -69,15 +89,21 @@ public class ListRoutesFragment extends Fragment {
 
     private void initView() {
         this.recyclerView = getView().findViewById(R.id.listRoutes);
+        this.textTotalRoutes = getView().findViewById(R.id.titleTotalRoutes);
+        this.textTotalActivities = getView().findViewById(R.id.totalNumActivities);
         this.swipeRefreshLayout = getView().findViewById(R.id.refreshRoutes);
         this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 initRoutesList();
+                int totalRoutes = completeItem.size() + inProcessItem.size() + availableItem.size();
+                textTotalActivities.setText(completeItem.size() + "/" + totalRoutes);
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        this.textTotalRoutes.setText("Itinerarios totales");
     }
 
     private void initRoutesList() {
@@ -173,5 +199,14 @@ public class ListRoutesFragment extends Fragment {
                 AppDatabase.getDatabaseMain(this.getContext()).daoApp().updateRoute(item.getRoute());
             }
         }
+
+        int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
+        this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
+        this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
     }
 }

@@ -48,6 +48,8 @@ public class ListPlantsFragment extends Fragment {
     private PlantAdapterList adapter;
     private List<PlantListItem> itemPlants;
 
+    private TextView textTotalPlants, textTotalNumPlants;
+
     LinkedHashMap<String,List<PlantListItem>> sectionsName =  new LinkedHashMap<String,List<PlantListItem>>();
     private List<PlantsSection> sections;
 
@@ -83,6 +85,8 @@ public class ListPlantsFragment extends Fragment {
 
     private void initView() {
         this.recyclerView = getView().findViewById(R.id.listPlants);
+        this.textTotalPlants = getView().findViewById(R.id.titleTotalPlants);
+        this.textTotalNumPlants = getView().findViewById(R.id.totalNumPlants);
         this.swipeRefreshLayout = getView().findViewById(R.id.refreshPlants);
         this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -92,6 +96,8 @@ public class ListPlantsFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        this.textTotalPlants.setText("Plantas totales");
     }
 
     private void initPlantsList() {
@@ -108,6 +114,14 @@ public class ListPlantsFragment extends Fragment {
         }
         this.adapter = new PlantAdapterList(this.getContext(), this.getActivity(), this.sections, this.itemPlants);
         this.recyclerView.setAdapter(this.adapter);
+
+        int unlockPlants = 0;
+        for(PlantListItem item:this.itemPlants) {
+            if(item.getPlant() != null && item.getPlant().isUnlock()) {
+                unlockPlants++;
+            }
+        }
+        this.textTotalNumPlants.setText(unlockPlants + "/" + this.itemPlants.size());
     }
 
     public List<PlantsSection> createSectionsData(Context context) {

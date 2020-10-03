@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabloliborra.uaplant.Plants.ListPlantsFragment;
+import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.MessageEvent;
@@ -58,7 +59,6 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
         holder.title.setText(this.routesList.get(position).getTitle());
         holder.description.setText(this.routesList.get(position).getDescription());
         holder.numActivities.setText(this.routesList.get(position).getCompleteActivities() + "/" + this.routesList.get(position).getTotalActivities());
-        if(this.routesList.get(position).getCompleteActivities() == this.routesList.get(position).getTotalActivities())
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -99,23 +99,34 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                List<Activity> activitiesTotal = route.getActivities(context);
-                for(Activity a:activitiesTotal) {
-                    List<Question> questions = a.getQuestions(context);
-                    for(Question q:questions){
-                        AppDatabase.getDatabaseMain(context).daoApp().deleteQuestion(q);
+                if(route != null) {
+                    List<Activity> activitiesTotal = route.getActivities(context);
+                    if(activitiesTotal != null) {
+                        for(Activity a:activitiesTotal) {
+                            List<Question> questions = a.getQuestions(context);
+                            if(a != null && questions != null) {
+                                for(Question q:questions){
+                                    if(q != null) {
+                                        AppDatabase.getDatabaseMain(context).daoApp().deleteQuestion(q);
+                                    }
+                                }
+                                Plant p = a.getPlant(context);
+                                if(p != null) {
+                                    AppDatabase.getDatabaseMain(context).daoApp().deletePlant(p);
+                                }
+                                AppDatabase.getDatabaseMain(context).daoApp().deleteActivity(a);
+                            }
+                        }
                     }
-                    AppDatabase.getDatabaseMain(context).daoApp().deletePlant(a.getPlant(context));
-                    AppDatabase.getDatabaseMain(context).daoApp().deleteActivity(a);
+                    AppDatabase.getDatabaseMain(context).daoApp().deleteRoute(route);
+
+                    routesList.remove(position);
+                    notifyItemRemoved(position);
+                    parentAdapter.notifyDataSetChanged();
+                    EventBus.getDefault().post(new MessageEvent());
+
+                    alertDialog.dismiss();
                 }
-                AppDatabase.getDatabaseMain(context).daoApp().deleteRoute(route);
-
-                routesList.remove(position);
-                notifyItemRemoved(position);
-                parentAdapter.notifyDataSetChanged();
-                EventBus.getDefault().post(new MessageEvent());
-
-                alertDialog.dismiss();
             }
         });
         alertDialog.show();
