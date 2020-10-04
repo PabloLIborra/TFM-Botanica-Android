@@ -43,6 +43,9 @@ public interface DaoApp {
     @Query("SELECT * FROM activity")
     List<Activity> getAllActivities();
 
+    @Query("SELECT * FROM activity WHERE title = :title")
+    Activity getActivityByTitle(String title);
+
     @Query("SELECT * FROM activity WHERE uid = :id")
     Activity loadActivityById(long id);
 
@@ -66,6 +69,9 @@ public interface DaoApp {
     @Query("SELECT * FROM Plant")
     List<Plant> getAllPlants();
 
+    @Query("SELECT * FROM plant WHERE scientific_name = :name")
+    Plant getPlantByTitle(String name);
+
     @Query("SELECT * FROM plant WHERE uid = :id")
     Plant loadPlantById(long id);
 
@@ -88,6 +94,9 @@ public interface DaoApp {
 
     @Query("SELECT * FROM Question")
     List<Question> getAllQuestions();
+
+    @Query("SELECT * FROM question WHERE title = :title")
+    Question getQuestionByTitle(String title);
 
     @Query("SELECT * FROM question WHERE uid = :id")
     Question loadQuestionById(long id);

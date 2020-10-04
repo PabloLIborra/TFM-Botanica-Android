@@ -22,5 +22,8 @@
     </style>
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/rounded_button_primary</item>
+    </style>Theme_Material_Light_NoActionBar_Fullscreen
+    <style name="DownloadDialogTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="android:windowBackground">@drawable/background_download</item>
     </style>
 </resources>

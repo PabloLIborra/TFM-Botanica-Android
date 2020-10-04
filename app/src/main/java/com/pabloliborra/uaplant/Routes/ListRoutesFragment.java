@@ -1,23 +1,19 @@
 package com.pabloliborra.uaplant.Routes;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.MessageEvent;
@@ -29,7 +25,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class ListRoutesFragment extends Fragment {
@@ -127,16 +122,16 @@ public class ListRoutesFragment extends Fragment {
         List<Route> routes = AppDatabase.getDatabaseMain(getContext()).daoApp().getAllRoutes();
         Collections.sort(routes);
 
-        List<Activity> activities = new ArrayList<>();
-        if(routes != null && routes.size() > 0) {
-            activities = AppDatabase.getDatabaseMain(getContext()).daoApp().loadActivityByRouteId(routes.get(0).getUid());
-        }
 
         this.availableItem.clear();
         this.inProcessItem.clear();
         this.completeItem.clear();
 
         for(Route r:routes) {
+            List<Activity> activities = new ArrayList<>();
+            if(routes != null && routes.size() > 0) {
+                activities = AppDatabase.getDatabaseMain(getContext()).daoApp().loadActivityByRouteId(r.getUid());
+            }
             switch (r.getState()) {
                 case IN_PROGRESS:
                     inProcessItem.add(new RouteListItem(r, this.getActivity(), activities.size()));
@@ -153,6 +148,9 @@ public class ListRoutesFragment extends Fragment {
         sections.add(new RoutesSection(R.drawable.inprocess_route_icon, this.sectionsName.get(0), inProcessItem));
         sections.add(new RoutesSection(R.drawable.new_route_icon, this.sectionsName.get(1), availableItem));
         sections.add(new RoutesSection(R.drawable.completed_route_icon, this.sectionsName.get(2), completeItem));
+
+        int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
+        this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
 
         return sections;
     }
@@ -202,11 +200,18 @@ public class ListRoutesFragment extends Fragment {
 
         int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
         this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
+
+        adapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
-        int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
-        this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
+        if(event.fromDownload == true) {
+            initRoutesList();
+            event.fromDownload = false;
+        } else {
+            int totalRoutes = this.completeItem.size() + this.inProcessItem.size() + this.availableItem.size();
+            this.textTotalActivities.setText(this.completeItem.size() + "/" + totalRoutes);
+        }
     }
 }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.pabloliborra.uaplant.Utils.JSONDownload;
 import com.pabloliborra.uaplant.pagecontroller.PagerController;
 
 public class TabBarActivity extends AppCompatActivity {
@@ -51,6 +52,13 @@ public class TabBarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendEmailReport();
+            }
+        });
+        final ImageButton downloadButton = findViewById(R.id.downloadButton);
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONDownload(TabBarActivity.this, JSONDownload.TypeClass.Class);
             }
         });
 

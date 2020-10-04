@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,16 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Marker;
 import com.pabloliborra.uaplant.R;
-import com.pabloliborra.uaplant.Routes.Activity;
-import com.pabloliborra.uaplant.Routes.Route;
-import com.pabloliborra.uaplant.Routes.RouteAdapterList;
-import com.pabloliborra.uaplant.Routes.RouteListItem;
-import com.pabloliborra.uaplant.Routes.RoutesChildAdapterList;
-import com.pabloliborra.uaplant.Routes.RoutesSection;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.MessageEvent;
 

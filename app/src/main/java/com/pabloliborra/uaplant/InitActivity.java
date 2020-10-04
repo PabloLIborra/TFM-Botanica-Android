@@ -1,22 +1,29 @@
 package com.pabloliborra.uaplant;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.Routes.Activity;
 import com.pabloliborra.uaplant.Routes.Question;
 import com.pabloliborra.uaplant.Routes.Route;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
+import com.pabloliborra.uaplant.Utils.JSONDownload;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
@@ -24,6 +31,9 @@ import java.util.Date;
 import java.util.List;
 
 public class InitActivity extends AppCompatActivity {
+
+    private static final int INTERNET_PERMISSION_CODE = 100;
+    private static final int NETWORK_PERMISSION_CODE = 101;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
@@ -44,7 +54,15 @@ public class InitActivity extends AppCompatActivity {
             }
         });
 
-        createData();
+        checkPermission(
+                Manifest.permission.INTERNET,
+                INTERNET_PERMISSION_CODE);
+        checkPermission(
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                NETWORK_PERMISSION_CODE);
+
+        //createData();
+        new JSONDownload(this, JSONDownload.TypeClass.Init);
     }
 
     private void startButton() {
@@ -53,6 +71,69 @@ public class InitActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void checkPermission(String permission, int requestCode)
+    {
+        if (ContextCompat.checkSelfPermission(this, permission)
+                == PackageManager.PERMISSION_DENIED) {
+
+            // Requesting the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[] { permission },
+                    requestCode);
+        }
+        else {
+            Toast.makeText(this,
+                    "Permission already granted",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    // This function is called when the user accepts or decline the permission.
+    // Request Code is used to check which permission called this function.
+    // This request code is provided when the user is prompt for permission.
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super
+                .onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
+
+        if (requestCode == INTERNET_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this,
+                        "Internet Permission Granted",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                Toast.makeText(this,
+                        "Internet Permission Denied",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == NETWORK_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this,
+                        "Network Permission Granted",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                Toast.makeText(this,
+                        "Network Permission Denied",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
     private void createData() {
         List<Route> routes = new ArrayList<>();
 

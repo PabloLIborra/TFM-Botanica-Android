@@ -19,7 +19,7 @@ import com.pabloliborra.uaplant.Utils.Constants;
 
 import java.util.List;
 
-public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.RecyclerRouteHolder> implements RoutesChildAdapterList.OnRouteClickListener {
+public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.RecyclerRouteHolder> {
     Activity activity;
 
     private List<RoutesSection> sections;
@@ -49,20 +49,13 @@ public class RouteAdapterList extends RecyclerView.Adapter<RouteAdapterList.Recy
         holder.titleSection.setText(section.getSectionTitle());
         holder.numActivitiesSection.setText(String.valueOf(section.getRoutesList().size()));
 
-        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(this.activity, routes, this, this);
+        RoutesChildAdapterList childAdapter = new RoutesChildAdapterList(this.activity, routes, this);
         holder.childRecyclerView.setAdapter(childAdapter);
     }
 
     @Override
     public int getItemCount() {
         return this.sections.size();
-    }
-
-    @Override
-    public void onRouteClick(View v, int position) {
-        Intent intent = new Intent(this.activity, RoutesMap.class);
-        intent.putExtra(Constants.routeExtraTitle, this.routes.get(position).getRoute());
-        this.activity.startActivity(intent);
     }
 
     public class RecyclerRouteHolder extends RecyclerView.ViewHolder {
