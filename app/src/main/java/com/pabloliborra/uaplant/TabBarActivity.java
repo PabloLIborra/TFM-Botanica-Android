@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.pabloliborra.uaplant.Plants.Plant;
+import com.pabloliborra.uaplant.Plants.PlantDetailActivity;
+import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.JSONDownload;
 import com.pabloliborra.uaplant.pagecontroller.PagerController;
 
@@ -28,6 +31,8 @@ public class TabBarActivity extends AppCompatActivity {
     TabItem routesTab, plantsTab, creditsTab;
     ImageButton reportButton;
     PagerController pagerAdapter;
+
+    JSONDownload jsonDownload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class TabBarActivity extends AppCompatActivity {
         plantsTab = findViewById(R.id.plantsTab);
         creditsTab = findViewById(R.id.creditsTab);
 
+
         final ImageButton reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,12 +64,20 @@ public class TabBarActivity extends AppCompatActivity {
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONDownload(TabBarActivity.this, JSONDownload.TypeClass.Class);
+                jsonDownload = new JSONDownload(TabBarActivity.this, JSONDownload.TypeClass.Class);
             }
         });
 
         pagerAdapter = new PagerController(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
+
+        if(getIntent().getSerializableExtra(Constants.plantExtraTitle) != null) {
+            Plant plant = (Plant) getIntent().getSerializableExtra(Constants.plantExtraTitle);
+
+            Intent i = new Intent(this, PlantDetailActivity.class);
+            i.putExtra(Constants.plantExtraTitle, plant);
+            startActivity(i);
+        }
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

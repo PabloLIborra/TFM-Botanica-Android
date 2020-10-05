@@ -35,6 +35,8 @@ public class InitActivity extends AppCompatActivity {
     private static final int INTERNET_PERMISSION_CODE = 100;
     private static final int NETWORK_PERMISSION_CODE = 101;
 
+    JSONDownload jsonDownload;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     @Override
@@ -62,7 +64,7 @@ public class InitActivity extends AppCompatActivity {
                 NETWORK_PERMISSION_CODE);
 
         //createData();
-        new JSONDownload(this, JSONDownload.TypeClass.Init);
+        jsonDownload = new JSONDownload(this, JSONDownload.TypeClass.Init);
     }
 
     private void startButton() {
@@ -80,12 +82,6 @@ public class InitActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[] { permission },
                     requestCode);
-        }
-        else {
-            Toast.makeText(this,
-                    "Permission already granted",
-                    Toast.LENGTH_SHORT)
-                    .show();
         }
     }
 
@@ -107,13 +103,13 @@ public class InitActivity extends AppCompatActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this,
-                        "Internet Permission Granted",
+                        "Permiso de acceso a internet concedido",
                         Toast.LENGTH_SHORT)
                         .show();
             }
             else {
                 Toast.makeText(this,
-                        "Internet Permission Denied",
+                        "Permiso de acceso a internet denegado",
                         Toast.LENGTH_SHORT)
                         .show();
             }
@@ -122,13 +118,13 @@ public class InitActivity extends AppCompatActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this,
-                        "Network Permission Granted",
+                        "Permiso de acceso a la red concedido",
                         Toast.LENGTH_SHORT)
                         .show();
             }
             else {
                 Toast.makeText(this,
-                        "Network Permission Denied",
+                        "Permiso de acceso a la red denegado",
                         Toast.LENGTH_SHORT)
                         .show();
             }

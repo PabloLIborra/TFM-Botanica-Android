@@ -3,6 +3,7 @@ package com.pabloliborra.uaplant.Routes;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,13 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pabloliborra.uaplant.Plants.ListPlantsFragment;
 import com.pabloliborra.uaplant.Plants.Plant;
+import com.pabloliborra.uaplant.Plants.PlantDetailActivity;
 import com.pabloliborra.uaplant.R;
+import com.pabloliborra.uaplant.TabBarActivity;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
+import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
@@ -184,6 +189,11 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+
+                Intent i = new Intent(context, TabBarActivity.class);
+                i.putExtra(Constants.plantExtraTitle, plant);
+                alertDialog.dismiss();
+                context.startActivity(i);
             }
         });
         alertDialog.show();

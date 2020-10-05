@@ -72,7 +72,8 @@ public class ListRoutesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        checkRoutes();
+        this.initRoutesList();
+        this.checkRoutes();
     }
 
     @Override
@@ -80,6 +81,7 @@ public class ListRoutesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         this.initView();
         this.initRoutesList();
+        this.checkRoutes();
     }
 
     private void initView() {

@@ -3,16 +3,15 @@ package com.pabloliborra.uaplant.Routes;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.TextViewCompat;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,37 +19,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.CustomInfoWindowAdapter;
-import com.pabloliborra.uaplant.Utils.MessageEvent;
 import com.pabloliborra.uaplant.Utils.State;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
     private String ACTIVITY_TAG = "Mapa Actividad";
@@ -238,22 +229,24 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
             for (Activity activity : this.activities) {
                 LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
                 MarkerOptions marker = new MarkerOptions().position(position);
+                BitmapDescriptor icon = null;
                 switch (activity.getState()) {
                     case IN_PROGRESS:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        icon = BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_place_red_36dp));
                         showInfoAlert = false;
                         break;
                     case AVAILABLE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        icon = BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_place_blue_36dp));
                         break;
                     case COMPLETE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        icon = BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_place_green_36dp));
                         showInfoAlert = false;
                         break;
                     case INACTIVE:
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                        icon = BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_place_gray_36dp));
                         break;
                 }
+                marker.icon(icon);
                 this.markers.put(mMap.addMarker(marker), activity);
             }
             if(showInfoAlert == true) {
@@ -270,5 +263,16 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.385750, -0.514250), 15));
         }
+    }
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

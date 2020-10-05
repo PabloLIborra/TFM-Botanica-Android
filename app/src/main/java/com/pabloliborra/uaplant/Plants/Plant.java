@@ -8,6 +8,7 @@ import com.pabloliborra.uaplant.Routes.Activity;
 import com.pabloliborra.uaplant.Utils.ListStringConverter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,8 @@ public class Plant implements Serializable, Comparable<Plant> {
     private String family;
     private String information;
     private boolean unlock;
+    @TypeConverters(ListStringConverter.class)
+    private List<String> images;
 
     private long activityId;
 
@@ -28,6 +31,7 @@ public class Plant implements Serializable, Comparable<Plant> {
         this.information = information;
         this.unlock = unlock;
         this.activityId = activityId;
+        this.images = new ArrayList<>();
     }
 
     public long getUid() {
@@ -68,6 +72,20 @@ public class Plant implements Serializable, Comparable<Plant> {
 
     public void setUnlock(boolean unlock) {
         this.unlock = unlock;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void addImage(String image) {
+        if(!images.equals("")) {
+            this.images.add(image);
+        }
     }
 
     public long getActivityId() {

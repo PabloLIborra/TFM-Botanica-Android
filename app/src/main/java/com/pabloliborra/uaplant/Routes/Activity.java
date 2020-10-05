@@ -28,6 +28,7 @@ public class Activity implements Serializable, Comparable<Activity> {
     private Double latitude;
     private Double longitude;
     private String information;
+    private String locationImage;
     @TypeConverters(DataConverter.class)
     private Date date;
 
@@ -42,6 +43,7 @@ public class Activity implements Serializable, Comparable<Activity> {
         this.information = information;
         this.date = date;
         this.routeId = routeId;
+        this.locationImage = "";
     }
 
     public long getUid() {
@@ -98,6 +100,14 @@ public class Activity implements Serializable, Comparable<Activity> {
 
     public void setInformation(String information) {
         this.information = information;
+    }
+
+    public String getLocationImage() {
+        return locationImage;
+    }
+
+    public void setLocationImage(String locationImage) {
+        this.locationImage = locationImage;
     }
 
     public Date getDate() {

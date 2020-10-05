@@ -3,10 +3,12 @@ package com.pabloliborra.uaplant.Plants;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Plants.PlantListItem;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdapterList.RecyclerPlantHolder> {
@@ -45,6 +49,27 @@ public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdap
         } else {
             holder.cardView.setCardBackgroundColor(Color.GRAY);
         }
+
+        File myPath = null;
+        ContextWrapper cw = new ContextWrapper(this.context);
+        if(this.plantsList.get(position).getPlant().getImages().size() > 0) {
+            for(String image:this.plantsList.get(position).getPlant().getImages()) {
+                String[] nameImageSplit = image.split("/");
+                if(nameImageSplit.length >= 2) {
+                    String nameImage = nameImageSplit[1];
+                    nameImageSplit = nameImageSplit[0].split("_");
+                    File directory = cw.getDir(nameImageSplit[1], Context.MODE_PRIVATE);
+                    // Create imageDir
+                    myPath = new File(directory, nameImage);
+                    break;
+                } else {
+                    myPath = new File("", "");
+                }
+            }
+        } else {
+            myPath = new File("", "");
+        }
+        Picasso.get().load(myPath).placeholder(R.drawable.not_available).into(holder.image);
     }
 
     @Override
@@ -55,6 +80,7 @@ public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdap
     class RecyclerPlantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView title;
+        ImageView image;
         CardView cardView;
 
         OnPlantClickListener onPlantClickListener;
@@ -64,6 +90,7 @@ public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdap
             super(itemView);
 
             this.title = itemView.findViewById(R.id.titlePlants);
+            this.image = itemView.findViewById(R.id.imagePlantCell);
             this.cardView = itemView.findViewById(R.id.cardViewPlant);
             this.onPlantClickListener = onPlantClickListener;
 

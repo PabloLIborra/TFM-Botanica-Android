@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.pabloliborra.uaplant.Utils.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,18 +128,29 @@ public class RoutesChildAdapterList extends RecyclerView.Adapter<RoutesChildAdap
                             }
                         }
                     }
+                    deleteFromInternalStorage(route.getTitle());
                     AppDatabase.getDatabaseMain(activity).daoApp().deleteRoute(route);
 
                     routesList.remove(position);
                     notifyItemRemoved(position);
                     parentAdapter.notifyDataSetChanged();
                     EventBus.getDefault().post(new MessageEvent());
-
                     alertDialog.dismiss();
                 }
             }
         });
         alertDialog.show();
+    }
+
+    private void deleteFromInternalStorage(String routeName) {
+        ContextWrapper cw = new ContextWrapper(this.activity);
+        File dir = cw.getDir(routeName, Context.MODE_PRIVATE);
+        String[] children = dir.list();
+        for (int i = 0; i < children.length; i++)
+        {
+            new File(dir, children[i]).delete();
+        }
+        boolean deleted = dir.delete();
     }
 
     class RecyclerRouteHolder extends RecyclerView.ViewHolder {

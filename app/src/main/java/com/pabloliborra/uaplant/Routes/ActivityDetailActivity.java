@@ -3,6 +3,8 @@ package com.pabloliborra.uaplant.Routes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,9 @@ import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
 import com.pabloliborra.uaplant.Utils.State;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 public class ActivityDetailActivity extends AppCompatActivity {
     private String ACTIVITY_TAG = "Detalle Actividad";
@@ -52,6 +57,20 @@ public class ActivityDetailActivity extends AppCompatActivity {
         this.titleActivity.setText(this.activity.getTitle());
         this.descriptionActivity.setText(this.activity.getInformation());
         this.descriptionActivity.setMovementMethod(new ScrollingMovementMethod());
+
+        File myPath;
+        ContextWrapper cw = new ContextWrapper(this);
+        String[] nameImageSplit = this.activity.getLocationImage().split("/");
+        if(nameImageSplit.length >= 2) {
+            String nameImage = nameImageSplit[1];
+            nameImageSplit = nameImageSplit[0].split("_");
+            File directory = cw.getDir(nameImageSplit[1], Context.MODE_PRIVATE);
+            // Create imageDir
+            myPath = new File(directory, nameImage);
+        } else {
+            myPath = new File("", "");
+        }
+        Picasso.get().load(myPath).placeholder(R.drawable.not_available).into(this.locationImage);
 
         this.setState();
 

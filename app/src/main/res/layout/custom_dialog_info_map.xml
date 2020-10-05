@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.0001"
-                app:srcCompat="@drawable/ic_place_violet_24dp" />
+                app:srcCompat="@drawable/ic_place_gray_24dp" />
 
             <TextView
                 android:id="@+id/textView9"

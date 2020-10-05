@@ -34,7 +34,7 @@
                 android:gravity="center"
                 android:text="Desarrollador"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -49,7 +49,7 @@
                 android:padding="5dp"
                 android:text="Pablo López Iborra"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:text="Colaboraciones"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:padding="5dp"
                 android:text="Sergio Cabañero García\n\nMiguel Ángel Lozano Ortega\nDpto. Ciencia de la Computacion e Inteligencia Artificial\n\nMaría Ángeles Alonso Vargas\nDpto. Ciencias Ambientales y Recursos Naturales\n\nManuel Benito Crespo Villalba\nDpto. Ciencias Ambientales y Recursos Naturales\n\nUniversidad de Alicante"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -88,7 +88,7 @@
                 android:gravity="center"
                 android:text="Propuesta"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -103,7 +103,7 @@
                 android:padding="5dp"
                 android:text="Máster en Desarrollo de Software para Dispositivos Móviles\nPropuesta realizada como\nTrabajo de Final de Máster (TFM)"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -115,7 +115,7 @@
                 android:gravity="center"
                 android:text="Recursos externos"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -129,9 +129,9 @@
                 android:background="@drawable/rectangle_transparent_border"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Dependencias\n\nPlayServicesMaps\nPlayServicesLocation\nRoom"
+                android:text="Dependencias\n\nPlayServicesMaps\nPlayServicesLocation\nRoom\nEventBus\nPicasso"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
     </ScrollView>
