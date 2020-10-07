@@ -79,6 +79,13 @@ public class Plant implements Serializable, Comparable<Plant> {
     }
 
     public List<String> getImages() {
+        List<String> imagesAux = new ArrayList<>();
+        for(String image:this.images) {
+            if(!image.equalsIgnoreCase("")) {
+                imagesAux.add(image);
+            }
+        }
+        this.images = imagesAux;
         return images;
     }
 
