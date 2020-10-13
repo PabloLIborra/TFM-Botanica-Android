@@ -148,7 +148,9 @@ public class JSONDownload {
                                         break;
                                     }
                                 }
-                                imagesLocalizationToDownload.put(activity, route.getTitle() + ";" + activity.getTitle() + ";" + JO.get("foto_localizacion").toString() + ";" + urlServer + routeTxt + "/" + JO.get("foto_localizacion").toString());
+                                String plantName = JO.get("nombre_cientifico").toString().replace(" ","_");
+                                String nameLocationImage = JO.get("foto_localizacion").toString().replace(" ","_");
+                                imagesLocalizationToDownload.put(activity, route.getTitle() + ";" + plantName + ";" + JO.get("foto_localizacion").toString() + ";" + urlServer + routeTxt + "/" + plantName + "/" + nameLocationImage);
 
                                 Plant plant = new Plant(JO.get("nombre_cientifico").toString(), JO.get("familia").toString(),
                                         JO.get("descripcion_planta").toString(), false, activity.getUid());
@@ -158,7 +160,8 @@ public class JSONDownload {
                                 List<String> images = new ArrayList<>();
                                 String[] imagesPlant = JO.get("fotos_carrusel").toString().split(";");
                                 for(String image:imagesPlant) {
-                                    images.add(route.getTitle() + ";" + activity.getTitle() + ";" + image + ";"  + urlServer + routeTxt + "/" + image);
+                                    String nameImage = JO.get("fotos_carrusel").toString().replace(" ","_");
+                                    images.add(route.getTitle() + ";" + plantName + ";" + image + ";"  + urlServer + routeTxt + "/" + plantName + "/" + nameImage);
                                 }
                                 imagesPlantsToDownload.put(plant, images);
 
@@ -371,12 +374,12 @@ public class JSONDownload {
         Picasso.get().load(parseUrl[3]).into(targetPlant.get(targetPlant.size()-1));
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage, String nameRoute, String nameActivity, String nameImage){
+    private String saveToInternalStorage(Bitmap bitmapImage, String nameRoute, String namePlant, String nameImage){
         ContextWrapper cw = new ContextWrapper(this.contextActivity);
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir(nameRoute, Context.MODE_PRIVATE);
         // Create imageDir
-        String nameFile = nameActivity + "_" + nameImage;
+        String nameFile = namePlant + "_" + nameImage;
         File mypath = new File(directory, nameFile);
 
         FileOutputStream fos = null;
