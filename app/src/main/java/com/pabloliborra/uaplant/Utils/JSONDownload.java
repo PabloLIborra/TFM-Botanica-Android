@@ -173,7 +173,6 @@ public class JSONDownload {
                                     for(String answer:answers) {
                                         listAnswers.add(answer);
                                     }
-                                    listAnswers.add(JO.get("respuestac").toString());
                                     Question question = new Question(JO.get("titulo_pregunta").toString(), listAnswers, JO.get("respuestac").toString(), activity.getUid());
                                     AppDatabase.getDatabaseMain(contextActivity).daoApp().insertAllQuestions(question);
                                 }
