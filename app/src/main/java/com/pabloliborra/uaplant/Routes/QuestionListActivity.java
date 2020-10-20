@@ -45,7 +45,7 @@ public class QuestionListActivity extends AppCompatActivity {
         }
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerQuestionList);
-        QuestionAdapterList adapter = new QuestionAdapterList(this, questionsList, this.activity);
+        final QuestionAdapterList adapter = new QuestionAdapterList(this, questionsList, this.activity);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -54,7 +54,8 @@ public class QuestionListActivity extends AppCompatActivity {
         sendQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.getAdapter().notifyDataSetChanged();
+                adapter.checkAnswers();
+                adapter.notifyDataSetChanged();
             }
         });
 

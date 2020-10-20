@@ -36,7 +36,6 @@ public class PlantDetailActivity extends AppCompatActivity {
 
     Activity activity = this;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

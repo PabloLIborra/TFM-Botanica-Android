@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.Marker;
 import com.pabloliborra.uaplant.Plants.ListPlantsFragment;
 import com.pabloliborra.uaplant.Plants.Plant;
 import com.pabloliborra.uaplant.Plants.PlantDetailActivity;
@@ -28,13 +29,15 @@ import com.pabloliborra.uaplant.Utils.State;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterList.ViewHolder>{
     private Context context;
     private View listItem;
     private List<QuestionListItem> listQuestions;
-    private List<ItemHolder> itemHolders;
+    LinkedHashMap<QuestionListItem,DataQuestion> listDataQuestion;
     private boolean testCompleted = true;
 
     private AlertDialog.Builder builder;
@@ -45,11 +48,27 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
     private Activity activity;
     private Plant plant;
 
+    private class DataQuestion {
+        public List<String> answers;
+        public int drawableLayout;
+        public int position;
+        public boolean tocheck = false;
+        public boolean correct = false;
+        public String lastAnswer = "";
+        public int answerSelected;
+
+        public DataQuestion(List<String> answers, int drawableLayout, int position) {
+            this.answers = answers;
+            this.drawableLayout = drawableLayout;
+            this.position = position;
+        }
+    }
+
     // RecyclerView recyclerView;
     public QuestionAdapterList(Context context, List<QuestionListItem> listQuestions, Activity activity) {
         this.context = context;
         this.listQuestions = listQuestions;
-        this.itemHolders = new ArrayList<>();
+        this.listDataQuestion = new LinkedHashMap<QuestionListItem,DataQuestion>();
         this.activity = activity;
         this.plant = activity.getPlant(context);
     }
@@ -64,41 +83,24 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if(this.itemHolders != null && this.itemHolders.contains(holder.item) != false && this.itemHolders.get(position).position == position) {
-            List<String> answers = this.itemHolders.get(position).answers;
-            holder.title.setText(this.itemHolders.get(position).title);
+        if(this.listDataQuestion.containsKey(this.listQuestions.get(position)) == true) {
+            List<String> answers = this.listDataQuestion.get(this.listQuestions.get(position)).answers;
+            holder.title.setText(this.listQuestions.get(position).getTitle());
             ArrayAdapter<String> ad = new ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, answers);
             holder.answers.setAdapter(ad);
-            holder.answers.setSelection(itemHolders.get(position).answerSelected);
-            System.out.println("EXISTEEEE");
+            holder.answers.setSelection(this.listDataQuestion.get(this.listQuestions.get(position)).answerSelected);
 
-            if(itemHolders.get(position).tocheck == true) {
-                if(position == 0) {
-                    this.testCompleted = true;
-                }
-                if(itemHolders.get(position).lastAnswer.equalsIgnoreCase(listQuestions.get(position).getTrueAnswer())) {
-                    itemHolders.get(position).drawableLayout = R.drawable.rounded_layout_green;
+            if(this.listDataQuestion.get(this.listQuestions.get(position)).tocheck == true) {
+                if(this.listDataQuestion.get(this.listQuestions.get(position)).lastAnswer.equalsIgnoreCase(listQuestions.get(position).getTrueAnswer())) {
+                    this.listDataQuestion.get(this.listQuestions.get(position)).drawableLayout = R.drawable.rounded_layout_green;
                     holder.layout.setBackgroundResource(R.drawable.rounded_layout_green);
                 } else {
-                    itemHolders.get(position).drawableLayout = R.drawable.rounded_layout_red;
+                    this.listDataQuestion.get(this.listQuestions.get(position)).drawableLayout = R.drawable.rounded_layout_red;
                     holder.layout.setBackgroundResource(R.drawable.rounded_layout_red);
-                    this.testCompleted = false;
                 }
-                if(position == this.itemHolders.size() - 1) {
-                    if(this.testCompleted == true) {
-                        this.activity.setState(State.COMPLETE);
-                        Plant plant = this.activity.getPlant(context);
-                        System.out.println(plant.isUnlock());
-                        plant.setUnlock(true);
-                        System.out.println(plant.isUnlock());
-
-                        AppDatabase.getDatabaseMain(this.context).daoApp().updatePlant(plant);
-                        AppDatabase.getDatabaseMain(this.context).daoApp().updateActivity(this.activity);
-                        this.createDialogTestCompleted();
-                    } else {
-                        this.createDialogTestError();
-                    }
-                }
+            } else {
+                this.listDataQuestion.get(listQuestions.get(position)).drawableLayout = R.drawable.rounded_layout_transparent;
+                holder.layout.setBackgroundResource(R.drawable.rounded_layout_transparent);
             }
         } else {
             List<String> answers = this.listQuestions.get(position).getAnswers();
@@ -108,23 +110,26 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
             ArrayAdapter<String> ad = new ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, answers);
             holder.answers.setAdapter(ad);
 
-            ItemHolder itemHolder = new ItemHolder(this.listQuestions.get(position).getTitle(), answers, R.drawable.rounded_layout_transparent, position);
-            holder.item = itemHolder;
-            this.itemHolders.add(itemHolder);
-            System.out.println("NO EXISTEEEE");
+            DataQuestion dataQuestion = new DataQuestion(answers, R.drawable.rounded_layout_transparent, position);
+            this.listDataQuestion.put(this.listQuestions.get(position), dataQuestion);
         }
-        System.out.println("HOLAAAAAAAAAAAA");
         final int numQuestion = position;
         holder.answers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(itemHolders.get(numQuestion).answerSelected != position) {
-                    String answer = parent.getItemAtPosition(position).toString();
-                    itemHolders.get(numQuestion).lastAnswer = answer;
-                    itemHolders.get(numQuestion).drawableLayout = R.drawable.rounded_layout_transparent;
+                String answer = parent.getItemAtPosition(position).toString();
+                listDataQuestion.get(listQuestions.get(numQuestion)).lastAnswer = answer;
+                if(listDataQuestion.get(listQuestions.get(numQuestion)).answerSelected != position) {
+                    listDataQuestion.get(listQuestions.get(numQuestion)).drawableLayout = R.drawable.rounded_layout_transparent;
                     holder.layout.setBackgroundResource(R.drawable.rounded_layout_transparent);
-                    itemHolders.get(numQuestion).answerSelected = position;
-                    itemHolders.get(numQuestion).tocheck = true;
+                    listDataQuestion.get(listQuestions.get(numQuestion)).answerSelected = position;
+                    listDataQuestion.get(listQuestions.get(numQuestion)).tocheck = false;
+                }
+
+                if(answer.equalsIgnoreCase(listQuestions.get(numQuestion).getTrueAnswer())) {
+                    listDataQuestion.get(listQuestions.get(numQuestion)).correct = true;
+                } else {
+                    listDataQuestion.get(listQuestions.get(numQuestion)).correct = false;
                 }
             }
             @Override
@@ -133,6 +138,34 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
             }
 
         });
+    }
+
+    public void checkAnswers() {
+        boolean result = true;
+        for (Map.Entry<QuestionListItem,DataQuestion> entry : this.listDataQuestion.entrySet()) {
+            QuestionListItem key = entry.getKey();
+            DataQuestion value = entry.getValue();
+            value.tocheck = true;
+            this.listDataQuestion.put(key, value);
+
+            if(value.correct == false) {
+                result = false;
+            }
+        }
+
+        if(result == true) {
+            this.activity.setState(State.COMPLETE);
+            Plant plant = this.activity.getPlant(context);
+            System.out.println(plant.isUnlock());
+            plant.setUnlock(true);
+            System.out.println(plant.isUnlock());
+
+            AppDatabase.getDatabaseMain(this.context).daoApp().updatePlant(plant);
+            AppDatabase.getDatabaseMain(this.context).daoApp().updateActivity(this.activity);
+            this.createDialogTestCompleted();
+        } else {
+            this.createDialogTestError();
+        }
     }
 
     @Override
@@ -203,7 +236,7 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
         public TextView title;
         public Spinner answers;
         public RelativeLayout layout;
-        public ItemHolder item;
+        public Question question;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -211,23 +244,6 @@ public class QuestionAdapterList extends RecyclerView.Adapter<QuestionAdapterLis
             this.answers = itemView.findViewById(R.id.spinnerAnswers);
             this.layout = itemView.findViewById(R.id.backgroundLayoutSpinner);
 
-        }
-    }
-
-    private class ItemHolder {
-        public String title;
-        public List<String> answers;
-        public int drawableLayout;
-        public int position;
-        public boolean tocheck = false;
-        public String lastAnswer = "";
-        public int answerSelected = 0;
-
-        public ItemHolder(String title, List<String> answers, int drawableLayout, int position) {
-            this.title = title;
-            this.answers = answers;
-            this.drawableLayout = drawableLayout;
-            this.position = position;
         }
     }
 }
