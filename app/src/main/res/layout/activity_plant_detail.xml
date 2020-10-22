@@ -58,6 +58,7 @@
         app:slideInterval="3000"
         app:strokeColor="#000000"
         app:strokeWidth="1dp"
+        app:indicatorMarginVertical="3dp"
         app:disableAutoPlayOnUserInteraction="true"
         app:indicatorMarginHorizontal="@dimen/activity_horizontal_margin"/>
 

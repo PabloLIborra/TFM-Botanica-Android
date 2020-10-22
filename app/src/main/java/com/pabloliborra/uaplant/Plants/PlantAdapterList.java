@@ -22,17 +22,13 @@ import com.pabloliborra.uaplant.Utils.Constants;
 
 import java.util.List;
 
-public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.RecyclerPlantHolder> implements PlantsChildAdapterList.OnPlantClickListener {
+public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.RecyclerPlantHolder> {
     private Context context;
     private Activity activity;
 
     private List<PlantsSection> sections;
     private List<PlantListItem> plants;
     private View listItem;
-
-    private AlertDialog.Builder builder;
-    private TextView titleAlert, subtitleAlert, routeAlert, activityAlert;
-    private Button closeButtonAlert;
 
     public PlantAdapterList(Context context, Activity activity, List<PlantsSection> sections, List<PlantListItem> plants) {
         this.context = context;
@@ -63,56 +59,13 @@ public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.Recy
         }
         holder.numPlantsSection.setText(unlockPlants + "/" + section.getPlantsList().size());
 
-        PlantsChildAdapterList childAdapter = new PlantsChildAdapterList(this.activity, plants, this);
+        PlantsChildAdapterList childAdapter = new PlantsChildAdapterList(this.activity, plants);
         holder.childRecyclerView.setAdapter(childAdapter);
     }
 
     @Override
     public int getItemCount() {
         return this.sections.size();
-    }
-
-    @Override
-    public void onPlantClick(View v, int position) {
-        Plant plant = this.plants.get(position).getPlant();
-        if(plant.isUnlock() == true) {
-            Intent intent = new Intent(this.activity, PlantDetailActivity.class);
-            intent.putExtra(Constants.plantExtraTitle, this.plants.get(position).getPlant());
-            this.activity.startActivity(intent);
-        } else {
-            createDialogPlantLocked(plant);
-        }
-    }
-
-    private void createDialogPlantLocked(Plant plant) {
-        builder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
-        ViewGroup viewGroup = listItem.findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(listItem.getContext()).inflate(R.layout.custom_dialog_plant_locked, viewGroup, false);
-
-        this.titleAlert = dialogView.findViewById(R.id.titleAlertInfo);
-        this.subtitleAlert = dialogView.findViewById(R.id.subtitleAlertInfo);
-        this.closeButtonAlert = dialogView.findViewById(R.id.buttonCloseAlertInfo);
-        this.routeAlert = dialogView.findViewById(R.id.routeAlertInfo);
-        this.activityAlert = dialogView.findViewById(R.id.activityAlertInfo);
-
-        builder.setView(dialogView);
-        final AlertDialog alertDialog = builder.create();
-        this.titleAlert.setText("Planta Bloqueada");
-        this.subtitleAlert.setText("Para poder visualizar esta planta necesitas desbloquearla. Para ello debes completar la siguiente actividad.");
-
-
-        com.pabloliborra.uaplant.Routes.Activity activityPlant = AppDatabase.getDatabaseMain(this.context).daoApp().loadActivityById(plant.getActivityId());
-        Route routePlant = AppDatabase.getDatabaseMain(this.context).daoApp().loadRouteById(activityPlant.getRouteId());
-
-        this.routeAlert.setText("Itinerario\n" + '"' + routePlant.getTitle() + '"');
-        this.activityAlert.setText("Actividad\n" + '"' + activityPlant.getTitle() + '"');
-        this.closeButtonAlert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
     }
 
     public class RecyclerPlantHolder extends RecyclerView.ViewHolder {
@@ -125,13 +78,6 @@ public class PlantAdapterList extends RecyclerView.Adapter<PlantAdapterList.Recy
             this.titleSection = itemView.findViewById(R.id.titleSectionPlant);
             this.numPlantsSection = itemView.findViewById(R.id.numActivitiesSectionPlant);
             this.childRecyclerView = itemView.findViewById(R.id.sectionRecyclerViewPlant);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    notifyDataSetChanged();
-                }
-            });
         }
     }
 

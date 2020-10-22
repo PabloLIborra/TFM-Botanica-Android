@@ -160,7 +160,7 @@ public class JSONDownload {
                                 List<String> images = new ArrayList<>();
                                 String[] imagesPlant = JO.get("fotos_carrusel").toString().split(";");
                                 for(String image:imagesPlant) {
-                                    String nameImage = JO.get("fotos_carrusel").toString().replace(" ","_");
+                                    String nameImage = image.replace(" ","_");
                                     images.add(route.getTitle() + ";" + plantName + ";" + image + ";"  + urlServer + routeTxt + "/" + plantName + "/" + nameImage);
                                 }
                                 imagesPlantsToDownload.put(plant, images);
