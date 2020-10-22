@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +32,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.pabloliborra.uaplant.R;
 import com.pabloliborra.uaplant.Utils.AppDatabase;
 import com.pabloliborra.uaplant.Utils.Constants;
@@ -160,6 +163,7 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
             Log.e("MAP", "Style parsing failed.");
         }
         changeActivityState();
+        addPolyline();
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -263,6 +267,15 @@ public class RoutesMap extends AppCompatActivity implements OnMapReadyCallback, 
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.385750, -0.514250), 15));
         }
+    }
+
+    private void addPolyline() {
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLACK).geodesic(true);
+        for(Activity activity : this.activities) {
+            LatLng position = new LatLng(activity.getLatitude(), activity.getLongitude());
+            options.add(position);
+        }
+        this.mMap.addPolyline(options);
     }
 
     private Bitmap getBitmap(int drawableRes) {
