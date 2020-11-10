@@ -9,6 +9,7 @@ import com.pabloliborra.uaplant.Utils.ListStringConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -86,6 +87,8 @@ public class Plant implements Serializable, Comparable<Plant> {
             }
         }
         this.images = imagesAux;
+
+        Collections.sort(images);
         return images;
     }
 

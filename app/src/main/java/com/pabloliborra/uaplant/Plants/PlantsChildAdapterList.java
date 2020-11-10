@@ -25,6 +25,7 @@ import com.pabloliborra.uaplant.Utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public class PlantsChildAdapterList extends RecyclerView.Adapter<PlantsChildAdapterList.RecyclerPlantHolder> {
